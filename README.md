@@ -1,6 +1,6 @@
-This repo is the base that the Limebyte Labs blog is built on, we have a short video walkthrough on it here: https://www.youtube.com/watch?v=R4l2rTSXWhY
+Welcome to the Limebyte Labs blog platform! This repository contains the foundational codebase that powers our blog. For a comprehensive overview, check out our video walkthrough: https://www.youtube.com/watch?v=R4l2rTSXWhY
 
-This repo won't be maintained, as our blog is forked from the current stage you see in the video walkrhough.
+Please note that this repository serves as a reference implementation and won't receive ongoing maintenance, as we've forked it to create our production blog
 
 # Limebyte Blog
 
@@ -51,36 +51,7 @@ A modern, lightweight blog platform with newsletter subscription capabilities an
 
 5. **Set up NGINX (Production):**
    
-   Add this to your NGINX config:
-   ```nginx
-   # API routes - proxy to Node.js backend
-   location /api/ {
-       proxy_pass http://0.0.0.0:3000;
-       proxy_buffering off;
-       proxy_set_header X-Real-IP $remote_addr;
-       proxy_set_header X-Forwarded-Host $host;
-       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-       proxy_set_header X-Forwarded-Proto $scheme;
-       proxy_set_header Host $host;
-       proxy_http_version 1.1;
-       proxy_set_header Upgrade $http_upgrade;
-       proxy_set_header Connection "upgrade";
-   }
-
-   # Everything else - proxy to Node.js
-   location / {
-       proxy_pass http://0.0.0.0:3000;
-       proxy_buffering off;
-       proxy_set_header X-Real-IP $remote_addr;
-       proxy_set_header X-Forwarded-Host $host;
-       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-       proxy_set_header X-Forwarded-Proto $scheme;
-       proxy_set_header Host $host;
-       proxy_http_version 1.1;
-       proxy_set_header Upgrade $http_upgrade;
-       proxy_set_header Connection "upgrade";
-   }
-   ```
+   A complete NGINX configuration file is included in the repository (`NGINX`). You can use this as a reference or copy the relevant sections to your NGINX config.
 
    Test and reload NGINX:
    ```bash
