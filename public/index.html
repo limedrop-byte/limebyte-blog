@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limebyte Labs</title>
+    <meta name="description" content="We’re a lab, a think tank, and a sandbox for AI ideas. Just documenting the journey — no pressure.">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://limebytelabs.com/">
+    <meta property="og:title" content="Limebyte Labs">
+    <meta property="og:description" content="We’re a lab, a think tank, and a sandbox for AI ideas. Just documenting the journey — no pressure.">
+    <meta property="og:image" content="https://limebytelabs.com/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Limebyte Labs - AI experiments and documentation">
+    <meta property="og:site_name" content="Limebyte Labs">
+
+    
+    <script>
+        // Apply dark mode immediately to prevent flash
+        (function() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'enabled') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+        
+
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark mode styles */
+        html.dark-mode body {
+            color: #fff;
+            background-color: #000;
+        }
+
+        html.dark-mode .article-content {
+            border-color: #333;
+        }
+
+        html.dark-mode .article h2 {
+            color: #fff;
+        }
+
+        html.dark-mode .article:hover h2 {
+            color: #ccc;
+        }
+
+        html.dark-mode .article p {
+            color: #ccc;
+        }
+
+
+
+        html.dark-mode .search-section {
+            border-color: #333;
+        }
+
+        html.dark-mode .links-section {
+            border-color: #333;
+        }
+
+        html.dark-mode .search-container input {
+            background-color: #111;
+            color: #fff;
+            border-color: #333;
+        }
+
+        html.dark-mode .search-container input::placeholder {
+            color: #666;
+        }
+
+        html.dark-mode .sort-controls select {
+            background-color: #111;
+            color: #fff;
+            border-color: #333;
+        }
+
+        html.dark-mode .link-item a {
+            color: #ccc;
+            border-color: #333;
+        }
+
+        html.dark-mode .link-item a:hover {
+            color: #fff;
+            border-color: #666;
+        }
+
+        html.dark-mode .newsletter-modal-content {
+            background-color: #111;
+            color: #fff;
+        }
+
+        html.dark-mode .newsletter-modal h2 {
+            color: #fff;
+        }
+
+        html.dark-mode .newsletter-modal p {
+            color: #ccc;
+        }
+
+        html.dark-mode .newsletter-form input[type="email"] {
+            background-color: #000;
+            color: #fff;
+            border-color: #333;
+        }
+
+        html.dark-mode .link-modal-content {
+            background-color: #111;
+            color: #fff;
+        }
+
+        html.dark-mode .link-form-group input {
+            background-color: #000;
+            color: #fff;
+            border-color: #333;
+        }
+
+        html.dark-mode .logo h1 {
+            color: #fff;
+        }
+
+        html.dark-mode .logo p {
+            color: #ccc;
+        }
+
+        /* Dark mode styles for New dropdown */
+        html.dark-mode .new-dropdown-btn {
+            background-color: #fff;
+            color: #000;
+        }
+
+        html.dark-mode .new-dropdown-btn:hover {
+            background-color: #e5e7eb;
+        }
+
+        html.dark-mode .new-dropdown-menu {
+            background-color: #111;
+            border-color: #333;
+        }
+
+        html.dark-mode .new-dropdown-menu a,
+        html.dark-mode .new-dropdown-menu button {
+            color: #fff;
+        }
+
+        html.dark-mode .new-dropdown-menu a:hover,
+        html.dark-mode .new-dropdown-menu button:hover {
+            background-color: #222;
+        }
+
+        /* Dark mode styles for Newsletter */
+        html.dark-mode .newsletter-banner {
+            background-color: #fff;
+            color: #000;
+        }
+
+        html.dark-mode .newsletter-banner:hover {
+            background-color: #e5e7eb;
+        }
+
+        html.dark-mode .newsletter-btn-primary {
+            background-color: #fff;
+            color: #000;
+        }
+
+        html.dark-mode .newsletter-btn-primary:hover {
+            background-color: #e5e7eb;
+        }
+
+        html.dark-mode .newsletter-btn-secondary {
+            background-color: #222;
+            color: #ccc;
+        }
+
+        html.dark-mode .newsletter-btn-secondary:hover {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 42rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            padding-top: 4rem;
+            position: relative;
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            display: none;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            background: none;
+            border: 1px solid #e5e7eb;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .dark-mode-toggle svg {
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .dark-mode-toggle:hover {
+            border-color: #9ca3af;
+            transform: scale(1.05);
+        }
+
+        html.dark-mode .dark-mode-toggle {
+            border-color: #333;
+            color: #fff;
+        }
+
+        html.dark-mode .dark-mode-toggle:hover {
+            border-color: #666;
+        }
+
+        /* Admin panel positioned when dark mode toggle is visible */
+        .admin-panel.with-toggle {
+            right: 5rem;
+        }
+        
+        .admin-panel a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: #ec4899;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-panel a:hover {
+            background-color: #db2777;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .admin-panel a::before {
+            content: '👤';
+            font-size: 1rem;
+            filter: brightness(0) invert(1);
+        }
+        
+        .logo {
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: -0.025em;
+            margin-bottom: 0;
+        }
+        
+        .logo p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+        
+        .header {
+            margin-bottom: 4rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1rem;
+        }
+        
+        /* New Dropdown */
+        .new-dropdown {
+            position: relative;
+            display: none;
+        }
+        
+        .new-dropdown-btn {
+            padding: 0.5rem 1rem;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .new-dropdown-btn:hover {
+            background-color: #374151;
+        }
+        
+        .new-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            min-width: 9rem;
+            display: none;
+            overflow: hidden;
+        }
+        
+        .new-dropdown-menu.show {
+            display: block;
+        }
+        
+        .new-dropdown-menu a,
+        .new-dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            color: #374151;
+            text-decoration: none;
+            border: none;
+            background: none;
+            font-size: 0.875rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .new-dropdown-menu a:hover,
+        .new-dropdown-menu button:hover {
+            background-color: #f9fafb;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #000;
+            letter-spacing: -0.025em;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            color: #4b5563;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+        
+        .articles-list {
+            margin-bottom: 4rem;
+        }
+        
+        .article {
+            margin-bottom: 3rem;
+        }
+        
+        .article a {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .article-content {
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 2rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .article:hover .article-content {
+            border-color: #e5e7eb;
+        }
+        
+        .article h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.025em;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .article:hover h2 {
+            color: #374151;
+        }
+        
+        .article p {
+            color: #4b5563;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        /* Pinned badge styling */
+        .pinned-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pinned-badge svg {
+            width: 0.875rem;
+            height: 0.875rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        html.dark-mode .pinned-badge {
+            color: #9ca3af;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+        
+        .article-meta span {
+            color: #6b7280;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #6b7280;
+            font-weight: 300;
+        }
+        
+        .footer {
+            padding-top: 4rem;
+            padding-bottom: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        
+        .footer p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+        
+        /* Newsletter Banner */
+        .newsletter-banner {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #000;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 100;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .newsletter-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .newsletter-banner.hidden {
+            display: none;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .newsletter-banner {
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+            }
+            
+            .newsletter-banner:hover {
+                transform: translateX(-50%) translateY(-2px);
+            }
+        }
+        
+        /* Newsletter Modal */
+        .newsletter-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .newsletter-modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 24rem;
+            text-align: center;
+        }
+        
+        .newsletter-modal h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+        
+        .newsletter-modal p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .newsletter-form input[type="email"] {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .newsletter-form input[type="email"]:focus {
+            outline: none;
+            border-color: #374151;
+        }
+        
+        .newsletter-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .newsletter-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .newsletter-btn-primary {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        .newsletter-btn-primary:hover {
+            background-color: #374151;
+        }
+        
+        .newsletter-btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        
+        .newsletter-btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .newsletter-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .newsletter-message {
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+        
+        .newsletter-success {
+            color: #10b981;
+        }
+        
+        .newsletter-error {
+            color: #ef4444;
+        }
+        
+        /* Links Section */
+        .links-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .links-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .link-item {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .link-item a {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.625rem 1.125rem;
+            background: transparent;
+            color: #374151;
+            text-decoration: none;
+            border: 1px solid #9ca3af;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            transition: all 0.2s ease;
+            min-height: 2.5rem;
+        }
+        
+        .link-item a:hover {
+            background: transparent;
+            border-color: #374151;
+            color: #1f2937;
+        }
+        
+        .link-item a:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .link-actions {
+            display: none;
+            gap: 0.375rem;
+            margin-left: 0.5rem;
+        }
+        
+        .link-item:hover .link-actions {
+            display: flex;
+        }
+        
+        .link-action-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.375rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .link-action-btn:hover {
+            color: #374151;
+            background: #fff;
+            border-color: #d1d5db;
+            transform: scale(1.05);
+        }
+        
+        .link-action-btn.delete-btn:hover {
+            color: #ef4444;
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+        
+        /* Link Modal */
+        .link-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .link-modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 28rem;
+        }
+        
+        .link-modal h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.025em;
+        }
+        
+        .link-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .link-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .link-form-group label {
+            font-size: 0.875rem;
+            color: #374151;
+            font-weight: 300;
+        }
+        
+        .link-form-group input {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .link-form-group input:focus {
+            outline: none;
+            border-color: #374151;
+        }
+        
+        .link-form-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        .link-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .link-btn-primary {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        .link-btn-primary:hover {
+            background-color: #374151;
+        }
+        
+        .link-btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        
+        .link-btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .link-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .link-message {
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+        
+        .link-success {
+            color: #10b981;
+        }
+        
+        .link-error {
+            color: #ef4444;
+        }
+
+        /* Search Section */
+        .search-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .search-container {
+            position: relative;
+            max-width: 400px;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-family: inherit;
+            background-color: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .search-container input:focus {
+            outline: none;
+            border-color: #374151;
+            box-shadow: 0 0 0 2px rgba(55, 65, 81, 0.1);
+        }
+        
+        .search-container input::placeholder {
+            color: #9ca3af;
+            font-weight: 300;
+        }
+        
+        #search-clear {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: color 0.2s ease, background-color 0.2s ease;
+        }
+        
+        #search-clear:hover {
+            color: #374151;
+            background-color: #f3f4f6;
+        }
+        
+        .search-results-info {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+
+        /* Search highlighting */
+        mark {
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+
+        /* Sort Controls */
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+        }
+        
+        .sort-controls label {
+            color: #6b7280;
+            font-weight: 300;
+            font-size: 0.8rem;
+            margin-right: 0.25rem;
+        }
+        
+        .sort-controls select {
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            background-color: #fafafa;
+            color: #374151;
+            font-size: 0.8rem;
+            font-weight: 300;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1rem;
+            padding-right: 2rem;
+        }
+        
+        .sort-controls select:focus {
+            outline: none;
+            border-color: #374151;
+            background-color: #fff;
+            box-shadow: 0 0 0 2px rgba(55, 65, 81, 0.1);
+        }
+        
+        .sort-controls select:hover {
+            border-color: #9ca3af;
+            background-color: #fff;
+        }
+        
+        @media (max-width: 768px) {
+            .sort-controls {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .sort-controls label {
+                width: 100%;
+                margin-bottom: 0.25rem;
+            }
+            
+            .sort-controls select {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <!-- Dark Mode Toggle -->
+            <button class="dark-mode-toggle" id="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle dark mode">
+                <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+
+            <!-- Admin Panel -->
+            <div class="admin-panel" id="admin-panel">
+                <a href="/admin/dashboard"></a>
+            </div>
+
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-header">
+                    <h1 id="site-title-header"></h1>
+                    <!-- New Dropdown -->
+                    <div class="new-dropdown" id="new-dropdown" style="display: none;">
+                        <button class="new-dropdown-btn" id="new-dropdown-btn">New ▼</button>
+                        <div class="new-dropdown-menu" id="new-dropdown-menu">
+                            <a href="/admin/dashboard">New Post</a>
+                            <button onclick="openLinkModal()">New Link</button>
+                        </div>
+                    </div>
+                </div>
+                <p class="site-description">No expectations, just building weird stuff for fun. Made with AI. Repo's public. Check out the shorts, the games, and join the newsletter.</p>
+            </div>
+
+            <!-- Links Section -->
+            <div class="links-section" id="links-section" style="display: none;">
+                <div class="links-list" id="links-list">
+                    <!-- Links will be populated here -->
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search articles..." maxlength="100">
+                    <button type="button" id="search-clear" style="display: none;">×</button>
+                </div>
+                <div class="sort-controls">
+                    <label for="sort-by">Sort by:</label>
+                    <select id="sort-by">
+                        <option value="date">Date</option>
+                        <option value="views">Views</option>
+                    </select>
+                    <select id="sort-order">
+                        <option value="desc">Newest First</option>
+                        <option value="asc">Oldest First</option>
+                    </select>
+                </div>
+                <div class="search-results-info" id="search-results-info" style="display: none;"></div>
+            </div>
+
+            <!-- Header
+            <header class="header">
+                <div class="header-content">
+                    <h1>Articles</h1>
+                </div>            </header> -->
+
+            <!-- Articles List -->
+            <div class="articles-list" id="articles-list">
+                <div class="loading">Loading articles...</div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Building the future, one commit at a time.</p>
+            </footer>
+        </div>
+    </main>
+
+    <!-- Newsletter Banner -->
+    <div class="newsletter-banner hidden" id="newsletter-banner">
+        Join Newsletter
+    </div>
+
+    <!-- Newsletter Modal -->
+    <div id="newsletter-modal" class="newsletter-modal">
+        <div class="newsletter-modal-content">
+            <h2>Join Our Newsletter</h2>
+            <p>Get the latest updates on AI, development, and fun experiments delivered to your inbox.</p>
+            
+            <form class="newsletter-form" id="newsletter-form">
+                <input type="email" id="newsletter-email" placeholder="Enter your email" required>
+                <div class="newsletter-buttons">
+                    <button type="button" class="newsletter-btn newsletter-btn-secondary" onclick="closeNewsletterModal()">Cancel</button>
+                    <button type="submit" class="newsletter-btn newsletter-btn-primary" id="newsletter-submit">Subscribe</button>
+                </div>
+                <div id="newsletter-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Link Modal -->
+    <div id="link-modal" class="link-modal">
+        <div class="link-modal-content">
+            <h2 id="link-modal-title">Add New Link</h2>
+            
+            <form class="link-form" id="link-form">
+                <div class="link-form-group">
+                    <label for="link-title">Title</label>
+                    <input type="text" id="link-title" placeholder="Enter link title" required>
+                </div>
+                <div class="link-form-group">
+                    <label for="link-url">URL</label>
+                    <input type="url" id="link-url" placeholder="https://example.com" required>
+                </div>
+                <div class="link-form-buttons">
+                    <button type="button" class="link-btn link-btn-secondary" onclick="closeLinkModal()">Cancel</button>
+                    <button type="submit" class="link-btn link-btn-primary" id="link-submit">Add Link</button>
+                </div>
+                <div id="link-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // Check if user is admin
+        function isAdmin() {
+            return !!localStorage.getItem('authToken');
+        }
+
+        // Dark mode functionality
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const toggle = document.getElementById('dark-mode-toggle');
+            
+            html.classList.toggle('dark-mode');
+            
+            if (html.classList.contains('dark-mode')) {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            const html = document.documentElement;
+            const toggle = document.getElementById('dark-mode-toggle');
+            
+            if (darkMode === 'enabled') {
+                html.classList.add('dark-mode');
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>';
+            } else {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+            }
+        }
+
+        // Update UI based on admin status
+        function updateAdminUI() {
+            const newDropdown = document.getElementById('new-dropdown');
+            const adminPanel = document.getElementById('admin-panel');
+            
+            if (isAdmin()) {
+                newDropdown.style.display = 'block';
+                adminPanel.style.display = 'block';
+                adminPanel.classList.add('with-toggle');
+            } else {
+                newDropdown.style.display = 'none';
+                adminPanel.style.display = 'none';
+                adminPanel.classList.remove('with-toggle');
+            }
+        }
+
+        // Dropdown functionality
+        function toggleDropdown() {
+            const menu = document.getElementById('new-dropdown-menu');
+            menu.classList.toggle('show');
+        }
+
+        // Dropdown button event listener
+        document.getElementById('new-dropdown-btn').addEventListener('click', toggleDropdown);
+
+        // Confetti celebration animation
+        function celebrateWithConfetti() {
+            // Create multiple bursts of confetti
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 }
+            };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            // Multiple colorful bursts
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+                colors: ['#FFE066', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7']
+            });
+            
+            fire(0.2, {
+                spread: 60,
+                colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4']
+            });
+            
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8,
+                colors: ['#FFE066', '#FFEAA7', '#81ECEC', '#74B9FF']
+            });
+            
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                scalar: 1.2,
+                colors: ['#FD79A8', '#E84393', '#A29BFE', '#6C5CE7']
+            });
+            
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+                colors: ['#00B894', '#00CEC9', '#0984E3', '#74B9FF']
+            });
+        }
+
+        // Newsletter functionality
+        function openNewsletterModal() {
+            document.getElementById('newsletter-modal').style.display = 'block';
+        }
+
+        function closeNewsletterModal() {
+            document.getElementById('newsletter-modal').style.display = 'none';
+            document.getElementById('newsletter-message').innerHTML = '';
+            document.getElementById('newsletter-form').reset();
+        }
+
+        // Newsletter banner click handler
+        document.getElementById('newsletter-banner').addEventListener('click', openNewsletterModal);
+
+        // Newsletter form submission
+        document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('newsletter-submit');
+            const messageDiv = document.getElementById('newsletter-message');
+            const email = document.getElementById('newsletter-email').value;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Subscribing...';
+            messageDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/newsletter/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Close modal immediately and trigger confetti celebration!
+                    closeNewsletterModal();
+                    celebrateWithConfetti();
+                    
+                    // Hide banner with a delay after confetti
+                    setTimeout(() => {
+                        const banner = document.getElementById('newsletter-banner');
+                        banner.style.transform = 'translateY(100px) scale(0.8)';
+                        banner.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            banner.classList.add('hidden');
+                        }, 300);
+                    }, 1500);
+                } else {
+                    messageDiv.innerHTML = `<div class="newsletter-error">${result.error}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="newsletter-error">Failed to subscribe. Please try again.</div>';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Subscribe';
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const newsletterModal = document.getElementById('newsletter-modal');
+            const linkModal = document.getElementById('link-modal');
+            const dropdown = document.getElementById('new-dropdown');
+            const dropdownMenu = document.getElementById('new-dropdown-menu');
+            
+            if (event.target === newsletterModal) {
+                closeNewsletterModal();
+            }
+            
+            if (event.target === linkModal) {
+                closeLinkModal();
+            }
+            
+            // Close dropdown if clicking outside
+            if (!dropdown.contains(event.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        }
+
+        // Fetch and display articles
+        async function loadArticles(searchQuery = '', sortBy = null, sortOrder = null) {
+            try {
+                // Get current sort values if not provided
+                if (sortBy === null) {
+                    sortBy = document.getElementById('sort-by')?.value || 'date';
+                }
+                if (sortOrder === null) {
+                    sortOrder = document.getElementById('sort-order')?.value || 'desc';
+                }
+                
+                const params = new URLSearchParams();
+                if (searchQuery) params.append('search', searchQuery);
+                params.append('sortBy', sortBy);
+                params.append('sortOrder', sortOrder);
+                
+                const url = `/api/posts?${params.toString()}`;
+                const response = await fetch(url);
+                const posts = await response.json();
+                
+                const articlesContainer = document.getElementById('articles-list');
+                const searchResultsInfo = document.getElementById('search-results-info');
+                
+                // Update search results info
+                if (searchQuery) {
+                    const resultText = posts.length === 1 ? 'result' : 'results';
+                    searchResultsInfo.textContent = `${posts.length} ${resultText} found for "${searchQuery}"`;
+                    searchResultsInfo.style.display = 'block';
+                } else {
+                    searchResultsInfo.style.display = 'none';
+                }
+                
+                if (posts.length === 0) {
+                    const message = searchQuery ? `No articles found for "${searchQuery}".` : 'No articles yet.';
+                    articlesContainer.innerHTML = `<div class="loading">${message}</div>`;
+                    return;
+                }
+                
+                articlesContainer.innerHTML = posts.map(post => {
+                    // Strip HTML tags for preview and limit length
+                    // First, replace block-level elements with spaces to maintain sentence separation
+                    let textContent = post.message
+                        .replace(/<\/(p|div|h[1-6]|li|blockquote|br)>/gi, ' ')
+                        .replace(/<[^>]*>/g, '')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    const preview = textContent.substring(0, 200) + (textContent.length > 200 ? '...' : '');
+                    
+                    // Highlight search terms in title if searching
+                    let highlightedTitle = post.subject;
+                    if (searchQuery) {
+                        const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        highlightedTitle = post.subject.replace(regex, '<mark>$1</mark>');
+                    }
+                    
+                    // Add pinned badge
+                    const pinnedBadge = post.pinned ? `
+                        <div class="pinned-badge">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M9 12L10 9H14L15 12M12 12V19M7 12H17" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Pinned
+                        </div>
+                    ` : '';
+                    
+                    return `
+                        <article class="article${post.pinned ? ' pinned' : ''}">
+                            <a href="/post/${post.slug || post.id}">
+                                <div class="article-content">
+                                    ${pinnedBadge}
+                                    <h2>${highlightedTitle}</h2>
+                                    <p>${preview}</p>
+                                    <div class="article-meta">
+                                        <span>${post.author}</span>
+                                        <span>•</span>
+                                        <span>${new Date(post.created_at).toLocaleDateString('en-US', { 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric' 
+                                        })}</span>
+                                        <span>•</span>
+                                        <span>${post.view_count || 0} view${(post.view_count || 0) === 1 ? '' : 's'}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                document.getElementById('articles-list').innerHTML = 
+                    '<div class="loading">Error loading articles.</div>';
+            }
+        }
+        
+        // Load site settings
+        async function loadSiteSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                
+                if (response.ok) {
+                    const settings = await response.json();
+                    
+                    // Update site title
+                    if (settings.site_title) {
+                        document.getElementById('site-title-header').textContent = settings.site_title;
+                        document.title = `Articles - ${settings.site_title}`;
+                    } else {
+                        // Fallback if no custom title is set
+                        document.getElementById('site-title-header').textContent = 'Blog';
+                        document.title = 'Articles';
+                    }
+                    
+                    // Update site description
+                    if (settings.site_description) {
+                        const descElement = document.querySelector('.site-description');
+                        if (descElement) {
+                            descElement.textContent = settings.site_description;
+                        }
+                    }
+                    
+                    // Update footer text
+                    if (settings.footer_text) {
+                        const footerElement = document.querySelector('.footer p');
+                        if (footerElement) {
+                            footerElement.textContent = settings.footer_text;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading site settings:', error);
+                // Fallback if there's an error
+                document.getElementById('site-title-header').textContent = 'Blog';
+                document.title = 'Articles';
+            }
+        }
+
+        // Check newsletter subscription status by IP
+        async function checkNewsletterSubscription() {
+            try {
+                const response = await fetch('/api/newsletter/check-ip');
+                const result = await response.json();
+                
+                if (!result.subscribed) {
+                    // Show the newsletter banner if IP hasn't subscribed yet
+                    const banner = document.getElementById('newsletter-banner');
+                    banner.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error checking newsletter subscription:', error);
+                // Show banner on error (default behavior)
+                const banner = document.getElementById('newsletter-banner');
+                banner.classList.remove('hidden');
+            }
+        }
+
+        // Load articles and update UI when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initDarkMode();
+            updateAdminUI();
+            loadArticles();
+            loadLinks();
+            loadSiteSettings();
+            checkNewsletterSubscription();
+            
+            // Initialize search and sort functionality
+            initializeSearch();
+            initializeSorting();
+        });
+
+        // Initialize search functionality
+        function initializeSearch() {
+            const searchInput = document.getElementById('search-input');
+            const searchClear = document.getElementById('search-clear');
+            let searchTimeout;
+
+            // Handle search input with debounce
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                
+                // Show/hide clear button
+                if (query) {
+                    searchClear.style.display = 'block';
+                } else {
+                    searchClear.style.display = 'none';
+                }
+
+                // Debounce search to avoid too many API calls
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    loadArticles(query);
+                }, 300);
+            });
+
+            // Handle clear button
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                searchClear.style.display = 'none';
+                loadArticles('');
+            });
+
+            // Handle Enter key
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(searchTimeout);
+                    loadArticles(searchInput.value.trim());
+                }
+            });
+        }
+
+        // Initialize sorting functionality
+        function initializeSorting() {
+            const sortBy = document.getElementById('sort-by');
+            const sortOrder = document.getElementById('sort-order');
+
+            // Update sort order options based on sort type
+            function updateSortOrderOptions() {
+                const selectedSort = sortBy.value;
+                sortOrder.innerHTML = '';
+                
+                if (selectedSort === 'date') {
+                    sortOrder.innerHTML = `
+                        <option value="desc">Newest First</option>
+                        <option value="asc">Oldest First</option>
+                    `;
+                } else if (selectedSort === 'views') {
+                    sortOrder.innerHTML = `
+                        <option value="desc">Most Views</option>
+                        <option value="asc">Least Views</option>
+                    `;
+                }
+            }
+
+            // Initialize sort order options
+            updateSortOrderOptions();
+
+            // Handle sort type change
+            sortBy.addEventListener('change', () => {
+                updateSortOrderOptions();
+                const searchQuery = document.getElementById('search-input').value.trim();
+                loadArticles(searchQuery);
+            });
+
+            // Handle sort order change
+            sortOrder.addEventListener('change', () => {
+                const searchQuery = document.getElementById('search-input').value.trim();
+                loadArticles(searchQuery);
+            });
+        }
+
+        // Links management
+        let currentEditingLink = null;
+
+        // Load and display links
+        async function loadLinks() {
+            try {
+                const response = await fetch('/api/links');
+                const links = await response.json();
+                
+                const linksSection = document.getElementById('links-section');
+                const linksList = document.getElementById('links-list');
+                
+                if (links.length === 0) {
+                    linksSection.style.display = 'none';
+                    return;
+                }
+                
+                linksSection.style.display = 'block';
+                
+                linksList.innerHTML = links.map(link => `
+                    <div class="link-item" data-link-id="${link.id}" data-link-title="${link.title.replace(/"/g, '&quot;')}" data-link-url="${link.url.replace(/"/g, '&quot;')}">
+                        <a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.title}</a>
+                        ${isAdmin() ? `
+                            <div class="link-actions">
+                                <button class="link-action-btn edit-btn" data-action="edit" title="Edit">✏️</button>
+                                <button class="link-action-btn delete-btn" data-action="delete" title="Delete">🗑️</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading links:', error);
+            }
+        }
+
+        // Open link modal for adding/editing
+        function openLinkModal() {
+            document.getElementById('link-modal').style.display = 'block';
+            document.getElementById('link-title').focus();
+        }
+
+        function closeLinkModal() {
+            document.getElementById('link-modal').style.display = 'none';
+            document.getElementById('link-form').reset();
+            document.getElementById('link-message').innerHTML = '';
+            currentEditingLink = null;
+            document.getElementById('link-modal-title').textContent = 'Add New Link';
+            document.getElementById('link-submit').textContent = 'Add Link';
+        }
+
+        // Handle link actions via event delegation
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('.link-action-btn[data-action="edit"]')) {
+                const linkItem = e.target.closest('.link-item');
+                const id = linkItem.dataset.linkId;
+                const title = linkItem.dataset.linkTitle;
+                const url = linkItem.dataset.linkUrl;
+                editLink(id, title, url);
+            } else if (e.target.matches('.link-action-btn[data-action="delete"]')) {
+                const linkItem = e.target.closest('.link-item');
+                const id = linkItem.dataset.linkId;
+                deleteLink(id);
+            }
+        });
+
+        // Edit link
+        function editLink(id, title, url) {
+            currentEditingLink = id;
+            document.getElementById('link-title').value = title;
+            document.getElementById('link-url').value = url;
+            document.getElementById('link-modal-title').textContent = 'Edit Link';
+            document.getElementById('link-submit').textContent = 'Update Link';
+            openLinkModal();
+        }
+
+        // Delete link
+        async function deleteLink(id) {
+            if (!confirm('Are you sure you want to delete this link?')) return;
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/links/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    loadLinks(); // Reload links
+                } else {
+                    alert('Failed to delete link');
+                }
+            } catch (error) {
+                alert('Failed to delete link');
+            }
+        }
+
+        // Link form submission
+        document.getElementById('link-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const submitBtn = document.getElementById('link-submit');
+            const messageDiv = document.getElementById('link-message');
+            const title = document.getElementById('link-title').value;
+            const url = document.getElementById('link-url').value;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = currentEditingLink ? 'Updating...' : 'Adding...';
+            messageDiv.innerHTML = '';
+            
+            try {
+                const method = currentEditingLink ? 'PUT' : 'POST';
+                const endpoint = currentEditingLink ? `/api/links/${currentEditingLink}` : '/api/links';
+                
+                const response = await fetch(endpoint, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ title, url })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.innerHTML = `<div class="link-success">${currentEditingLink ? 'Link updated!' : 'Link added!'}</div>`;
+                    loadLinks(); // Reload links
+                    
+                    setTimeout(() => {
+                        closeLinkModal();
+                    }, 1000);
+                } else {
+                    messageDiv.innerHTML = `<div class="link-error">${result.error}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="link-error">Failed to save link. Please try again.</div>';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = currentEditingLink ? 'Update Link' : 'Add Link';
+            }
+        });
+    </script>
+</body>
+</html> 

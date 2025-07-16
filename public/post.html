@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Loading...</title>
+    <meta name="description" content="" id="page-description">
+    
+    <script>
+        // Apply dark mode immediately to prevent flash
+        (function() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'enabled') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
+    
+    <!-- Quill.js CDN -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark mode styles */
+        html.dark-mode body {
+            color: #fff;
+            background-color: #000;
+        }
+
+        html.dark-mode .article-header {
+            border-color: #333;
+        }
+
+        html.dark-mode .article-header h1 {
+            color: #fff;
+        }
+
+        html.dark-mode .article-meta {
+            color: #ccc;
+        }
+
+        html.dark-mode .article-meta span {
+            color: #999;
+        }
+
+        html.dark-mode .article-content {
+            color: #ccc;
+        }
+
+        html.dark-mode .article-content h1,
+        html.dark-mode .article-content h2,
+        html.dark-mode .article-content h3 {
+            color: #fff;
+        }
+
+        html.dark-mode .article-content blockquote {
+            border-color: #333;
+            color: #999;
+        }
+
+        html.dark-mode .article-content code {
+            background-color: #222;
+            color: #ccc;
+        }
+
+        html.dark-mode .article-content pre {
+            background-color: #111;
+            border-color: #333;
+        }
+
+        html.dark-mode .share-button {
+            background-color: #333;
+            color: #ccc;
+        }
+
+        html.dark-mode .share-button:hover {
+            background-color: #444;
+            color: #fff;
+        }
+
+        html.dark-mode .share-dropdown-content {
+            background-color: #111;
+            border-color: #333;
+        }
+
+        html.dark-mode .share-option {
+            color: #ccc;
+            background: #111;
+        }
+
+        html.dark-mode .share-option:hover {
+            background-color: #222;
+        }
+
+        html.dark-mode .share-option.copy {
+            border-color: #333;
+        }
+
+        /* Dark mode styles for Newsletter */
+        html.dark-mode .newsletter-banner {
+            background-color: #fff;
+            color: #000;
+        }
+
+        html.dark-mode .newsletter-banner:hover {
+            background-color: #e5e7eb;
+        }
+
+        html.dark-mode .newsletter-modal-content {
+            background-color: #111;
+            color: #fff;
+        }
+
+        html.dark-mode .newsletter-modal h2 {
+            color: #fff;
+        }
+
+        html.dark-mode .newsletter-modal p {
+            color: #ccc;
+        }
+
+        html.dark-mode .newsletter-form input[type="email"] {
+            background-color: #000;
+            color: #fff;
+            border-color: #333;
+        }
+
+        html.dark-mode .newsletter-btn-primary {
+            background-color: #fff;
+            color: #000;
+        }
+
+        html.dark-mode .newsletter-btn-primary:hover {
+            background-color: #e5e7eb;
+        }
+
+        html.dark-mode .newsletter-btn-secondary {
+            background-color: #222;
+            color: #ccc;
+        }
+
+        html.dark-mode .newsletter-btn-secondary:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        html.dark-mode .footer {
+            border-color: #333;
+        }
+
+        html.dark-mode .logo h1 {
+            color: #fff;
+        }
+
+        html.dark-mode .logo p {
+            color: #ccc;
+        }
+
+        /* Dark mode styles for edit functionality */
+        html.dark-mode .edit-form label {
+            color: #ccc;
+        }
+
+        html.dark-mode .edit-form input[type="text"] {
+            background-color: #111;
+            color: #fff;
+            border: 1px solid #333 !important;
+        }
+
+        html.dark-mode .edit-form input[type="text"]:focus {
+            border: 1px solid #555 !important;
+        }
+
+        html.dark-mode .editor-container {
+            background-color: #111;
+            border-color: #333 !important;
+            border: 1px solid #333 !important;
+        }
+
+        html.dark-mode .ql-toolbar {
+            background-color: #111;
+            border-color: #333 !important;
+            border-bottom: 1px solid #333 !important;
+        }
+
+        html.dark-mode .ql-toolbar .ql-formats {
+            color: #ccc;
+        }
+
+        html.dark-mode .ql-toolbar button {
+            color: #ccc;
+        }
+
+        html.dark-mode .ql-toolbar button:hover {
+            color: #fff;
+        }
+
+        html.dark-mode .ql-toolbar .ql-stroke {
+            stroke: #ccc;
+        }
+
+        html.dark-mode .ql-toolbar .ql-fill {
+            fill: #ccc;
+        }
+
+        html.dark-mode .ql-container {
+            border: none !important;
+        }
+
+        html.dark-mode .ql-editor {
+            background-color: #111;
+            color: #ccc;
+            border: none !important;
+        }
+
+        html.dark-mode .ql-editor h1,
+        html.dark-mode .ql-editor h2,
+        html.dark-mode .ql-editor h3 {
+            color: #fff;
+        }
+
+        html.dark-mode .ql-editor blockquote {
+            border-left-color: #333;
+            color: #999;
+        }
+
+        html.dark-mode .btn-secondary {
+            background-color: #333;
+            color: #ccc;
+        }
+
+        html.dark-mode .btn-secondary:hover {
+            background-color: #444;
+            color: #fff;
+        }
+
+        html.dark-mode .btn-primary {
+            background-color: #fff;
+            color: #000;
+        }
+
+        html.dark-mode .btn-primary:hover {
+            background-color: #e5e7eb;
+        }
+
+        /* Dark mode styles for Quill editor dropdowns and tooltips */
+        html.dark-mode .ql-toolbar .ql-picker-options {
+            background-color: #111;
+            border-color: #333;
+        }
+
+        html.dark-mode .ql-toolbar .ql-picker-item {
+            color: #ccc;
+        }
+
+        html.dark-mode .ql-toolbar .ql-picker-item:hover {
+            color: #fff;
+            background-color: #333;
+        }
+
+        html.dark-mode .ql-toolbar .ql-picker-label {
+            color: #ccc;
+        }
+
+        html.dark-mode .ql-toolbar .ql-picker-label:hover {
+            color: #fff;
+        }
+
+        html.dark-mode .ql-toolbar .ql-active {
+            color: #fff !important;
+        }
+
+        html.dark-mode .ql-toolbar .ql-active .ql-stroke {
+            stroke: #fff !important;
+        }
+
+        html.dark-mode .ql-toolbar .ql-active .ql-fill {
+            fill: #fff !important;
+        }
+
+        /* Dark mode styles for admin actions */
+        html.dark-mode .admin-actions button {
+            color: #ccc;
+        }
+
+        html.dark-mode .admin-actions button:hover {
+            color: #fff;
+        }
+
+        html.dark-mode .admin-actions .delete-btn:hover {
+            color: #ef4444;
+        }
+
+        /* Pin indicator styles */
+        .pin-indicator {
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* Force all Quill Snow theme borders to be dark in dark mode */
+        html.dark-mode .ql-snow {
+            border: 1px solid #333 !important;
+        }
+
+        html.dark-mode .ql-snow .ql-toolbar {
+            border-bottom: 1px solid #333 !important;
+        }
+
+        html.dark-mode .ql-snow .ql-container {
+            border: none !important;
+        }
+        
+                .container {
+            max-width: 42rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            padding-top: 3rem;
+            position: relative;
+        }
+
+        .back-button {
+            margin-bottom: 2rem;
+        }
+        
+        .back-button a {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 300;
+            transition: color 0.2s ease;
+        }
+        
+        .back-button a:hover {
+            color: #1f2937;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            display: none;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            background: none;
+            border: 1px solid #e5e7eb;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .dark-mode-toggle svg {
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .dark-mode-toggle:hover {
+            border-color: #9ca3af;
+            transform: scale(1.05);
+        }
+
+        html.dark-mode .dark-mode-toggle {
+            border-color: #333;
+            color: #fff;
+        }
+
+        html.dark-mode .dark-mode-toggle:hover {
+            border-color: #666;
+        }
+
+        /* Admin panel positioned when dark mode toggle is visible */
+        .admin-panel.with-toggle {
+            right: 5rem;
+        }
+        
+        .admin-panel a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: #ec4899;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-panel a:hover {
+            background-color: #db2777;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .admin-panel a::before {
+            content: '👤';
+            font-size: 1rem;
+            filter: brightness(0) invert(1);
+        }
+        
+
+        
+        .article-header {
+            margin-bottom: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .article-header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+        
+        .article-meta span {
+            color: #6b7280;
+        }
+        
+        .admin-actions {
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .admin-actions button {
+            font-size: 0.875rem;
+            color: #6b7280;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-right: 1rem;
+            font-weight: 300;
+            transition: color 0.2s ease;
+        }
+        
+        .admin-actions button:hover {
+            color: #1f2937;
+        }
+        
+        .admin-actions .delete-btn:hover {
+            color: #ef4444;
+        }
+
+        /* Inline edit mode */
+        .edit-mode .article-header h1 {
+            display: none;
+        }
+        
+        .edit-mode .article-content > div {
+            display: none;
+        }
+        
+        .edit-form {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        .edit-mode .edit-form {
+            display: block;
+        }
+        
+        .edit-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .edit-form label {
+            display: block;
+            font-size: 0.875rem;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .edit-form input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #9ca3af;
+            border-radius: 0.375rem;
+            font-size: 2rem;
+            font-weight: 300;
+            font-family: inherit;
+            color: #000;
+            transition: border-color 0.2s ease;
+            background: #fff;
+        }
+        
+        .edit-form input[type="text"]:focus {
+            outline: none;
+            border-color: #374151;
+        }
+        
+        .editor-container {
+            border: 1px solid #9ca3af;
+            border-radius: 0.375rem;
+            background: #fff;
+            min-height: 300px;
+        }
+        
+        .ql-toolbar {
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid #9ca3af;
+            border-radius: 0.375rem 0.375rem 0 0;
+        }
+        
+        .ql-container {
+            border: none;
+            font-size: 1.125rem;
+            font-family: inherit;
+            min-height: 300px;
+        }
+        
+        .ql-editor {
+            padding: 1rem;
+            min-height: 300px;
+            line-height: 1.6;
+            color: #374151;
+            font-weight: 300;
+        }
+        
+        /* Match article content styling exactly in editor */
+        .ql-editor p {
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+        
+        .ql-editor p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .ql-editor p + p {
+            margin-top: 0;
+        }
+        
+        /* Match heading styles */
+        .ql-editor h1, .ql-editor h2, .ql-editor h3 {
+            font-weight: 600;
+            color: #000;
+            margin: 1.5rem 0 0.75rem 0;
+            letter-spacing: -0.025em;
+        }
+        
+        .ql-editor h1 { font-size: 1.75rem; }
+        .ql-editor h2 { font-size: 1.5rem; }
+        .ql-editor h3 { font-size: 1.25rem; }
+        
+        /* Match list spacing */
+        .ql-editor ul, .ql-editor ol {
+            margin-bottom: 1.5rem;
+            margin-left: 1.5rem;
+        }
+        
+        .ql-editor li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Match blockquote styles */
+        .ql-editor blockquote {
+            border-left: 4px solid #e5e7eb;
+            margin: 1.5rem 0;
+            padding-left: 1rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        .ql-editor:focus {
+            outline: none;
+        }
+        
+        /* Responsive iframe styling in editor */
+        .ql-editor iframe {
+            width: 100% !important;
+            height: 400px !important;
+            max-width: 100% !important;
+            margin: 1rem 0 !important;
+            border-radius: 0.5rem !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Mobile responsive in editor */
+        @media (max-width: 768px) {
+            .ql-editor iframe {
+                height: 250px !important;
+            }
+        }
+        
+        .edit-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #374151;
+        }
+        
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .edit-message {
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+        
+        .success-message {
+            color: #10b981;
+        }
+        
+        .error-message {
+            color: #ef4444;
+        }
+
+        /* Share button */
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background-color: #f3f4f6;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 300;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        /* Ensure consistent spacing by removing any default margins */
+        .share-dropdown {
+            margin: 0;
+        }
+        
+        .share-button:hover {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        
+        .share-button svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Share dropdown */
+        .share-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .share-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            min-width: 80px;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+        
+        .share-dropdown-content.show {
+            display: block;
+        }
+        
+        .share-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            background: #fff;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 1.25rem;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .share-option:hover {
+            background-color: #f9fafb;
+        }
+        
+        .share-option.facebook {
+            color: #1877f2;
+        }
+        
+        .share-option.copy {
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        .article-content {
+            margin-bottom: 4rem;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .article-content p {
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+        
+        .article-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .article-content p + p {
+            margin-top: 0;
+        }
+        
+        .article-content h1, .article-content h2, .article-content h3 {
+            font-weight: 600;
+            color: #000;
+            margin: 1.5rem 0 0.75rem 0;
+            letter-spacing: -0.025em;
+        }
+        
+        .article-content h1 { font-size: 1.75rem; }
+        .article-content h2 { font-size: 1.5rem; }
+        .article-content h3 { font-size: 1.25rem; }
+        
+        .article-content ul, .article-content ol {
+            margin-bottom: 1.5rem;
+            margin-left: 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .article-content blockquote {
+            border-left: 4px solid #e5e7eb;
+            margin: 1.5rem 0;
+            padding-left: 1rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        .article-content code {
+            background-color: #f3f4f6;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .article-content a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        
+        .article-content a:hover {
+            color: #1d4ed8;
+        }
+        
+        /* Simple iframe responsive styling */
+        .article-content iframe {
+            width: 100% !important;
+            height: 400px !important;
+            max-width: 100% !important;
+            margin: 1.5rem 0 !important;
+            border-radius: 0.5rem !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .article-content iframe {
+                height: 250px !important;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            color: #6b7280;
+            font-weight: 300;
+            margin-top: 4rem;
+        }
+        
+        .error {
+            text-align: center;
+            color: #ef4444;
+            font-weight: 300;
+            margin-top: 4rem;
+        }
+        
+        .footer {
+            padding-top: 4rem;
+            padding-bottom: 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid #f3f4f6;
+            text-align: center;
+        }
+        
+        .footer p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+        
+
+        
+        /* Newsletter Banner */
+        .newsletter-banner {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #000;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 100;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .newsletter-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .newsletter-banner.hidden {
+            display: none;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .newsletter-banner {
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+            }
+            
+            .newsletter-banner:hover {
+                transform: translateX(-50%) translateY(-2px);
+            }
+        }
+        
+        /* Newsletter Modal */
+        .newsletter-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .newsletter-modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 24rem;
+            text-align: center;
+        }
+        
+        .newsletter-modal h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+        
+        .newsletter-modal p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .newsletter-form input[type="email"] {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .newsletter-form input[type="email"]:focus {
+            outline: none;
+            border-color: #374151;
+        }
+        
+        .newsletter-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .newsletter-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .newsletter-btn-primary {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        .newsletter-btn-primary:hover {
+            background-color: #374151;
+        }
+        
+        .newsletter-btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        
+        .newsletter-btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .newsletter-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .newsletter-message {
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+        
+        .newsletter-success {
+            color: #10b981;
+        }
+        
+        .newsletter-error {
+            color: #ef4444;
+        }
+
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            .article-header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding-top: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <!-- Dark Mode Toggle -->
+            <button class="dark-mode-toggle" id="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle dark mode">
+                <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+
+            <!-- Admin Panel -->
+            <div class="admin-panel" id="admin-panel">
+                <a href="/admin/dashboard"></a>
+            </div>
+
+            <!-- Back Button -->
+            <div class="back-button">
+                <a href="/">← Back to Articles</a>
+            </div>
+
+            <!-- Article Content -->
+            <div id="article-container">
+                <div class="loading">Loading article...</div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Building the future, one commit at a time.</p>
+            </footer>
+        </div>
+    </main>
+
+
+
+    <!-- Newsletter Banner -->
+    <div class="newsletter-banner hidden" id="newsletter-banner">
+        Join Newsletter
+    </div>
+
+    <!-- Newsletter Modal -->
+    <div id="newsletter-modal" class="newsletter-modal">
+        <div class="newsletter-modal-content">
+            <h2>Join Our Newsletter</h2>
+            <p>Get the latest updates on AI, development, and fun experiments delivered to your inbox.</p>
+            
+            <form class="newsletter-form" id="newsletter-form">
+                <input type="email" id="newsletter-email" placeholder="Enter your email" required>
+                <div class="newsletter-buttons">
+                    <button type="button" class="newsletter-btn newsletter-btn-secondary" onclick="closeNewsletterModal()">Cancel</button>
+                    <button type="submit" class="newsletter-btn newsletter-btn-primary" id="newsletter-submit">Subscribe</button>
+                </div>
+                <div id="newsletter-message"></div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Quill.js CDN -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        let currentPost = null;
+        let editQuill = null;
+
+        // YouTube helper functions
+        function extractYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function createYouTubeEmbed(videoId) {
+            return `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        }
+
+        function insertYouTubeVideoEdit() {
+            const url = prompt('Enter YouTube URL:');
+            if (!url) return;
+            
+            const videoId = extractYouTubeId(url);
+            if (!videoId) {
+                alert('Please enter a valid YouTube URL');
+                return;
+            }
+            
+            const embedHTML = createYouTubeEmbed(videoId);
+            const range = editQuill.getSelection();
+            if (range) {
+                editQuill.clipboard.dangerouslyPasteHTML(range.index, embedHTML);
+            } else {
+                editQuill.clipboard.dangerouslyPasteHTML(embedHTML);
+            }
+        }
+
+        // Get post slug from URL
+        function getPostSlug() {
+            const path = window.location.pathname;
+            const matches = path.match(/\/post\/(.+)/);
+            return matches ? matches[1] : null;
+        }
+
+        // Check if user is admin
+        function isAdmin() {
+            return !!localStorage.getItem('authToken');
+        }
+
+        // Dark mode functionality
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const toggle = document.getElementById('dark-mode-toggle');
+            
+            html.classList.toggle('dark-mode');
+            
+            if (html.classList.contains('dark-mode')) {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            const html = document.documentElement;
+            const toggle = document.getElementById('dark-mode-toggle');
+            
+            if (darkMode === 'enabled') {
+                html.classList.add('dark-mode');
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>';
+            } else {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+            }
+        }
+
+        // Confetti celebration animation
+        function celebrateWithConfetti() {
+            // Create multiple bursts of confetti
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 }
+            };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            // Multiple colorful bursts
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+                colors: ['#FFE066', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7']
+            });
+            
+            fire(0.2, {
+                spread: 60,
+                colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4']
+            });
+            
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8,
+                colors: ['#FFE066', '#FFEAA7', '#81ECEC', '#74B9FF']
+            });
+            
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                scalar: 1.2,
+                colors: ['#FD79A8', '#E84393', '#A29BFE', '#6C5CE7']
+            });
+            
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+                colors: ['#00B894', '#00CEC9', '#0984E3', '#74B9FF']
+            });
+        }
+
+        // Load and display post
+        async function loadPost() {
+            const postSlug = getPostSlug();
+            if (!postSlug) {
+                document.getElementById('article-container').innerHTML = 
+                    '<div class="error">Post not found.</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/posts/${postSlug}`);
+                
+                if (!response.ok) {
+                    throw new Error('Post not found');
+                }
+                
+                currentPost = await response.json();
+                
+                // Update page title and meta
+                document.getElementById('page-title').textContent = currentPost.subject;
+                document.getElementById('page-description').setAttribute('content', currentPost.subject);
+                
+                // Load site settings to update page title
+                loadSiteSettings();
+                
+                // Update admin panel visibility
+                const adminPanel = document.getElementById('admin-panel');
+                if (isAdmin()) {
+                    adminPanel.style.display = 'block';
+                    adminPanel.classList.add('with-toggle');
+                } else {
+                    adminPanel.style.display = 'none';
+                    adminPanel.classList.remove('with-toggle');
+                }
+                
+                // Display post content
+                const adminActionsHtml = isAdmin() ? `
+                    <div class="admin-actions" style="display: block;">
+                        <button onclick="toggleEditMode()">Edit</button>
+                        <button onclick="togglePin()" class="pin-btn">${currentPost.pinned ? 'Unpin' : 'Pin'}</button>
+                        <button class="delete-btn" onclick="confirmDelete()">Delete</button>
+                    </div>
+                ` : '';
+
+                const editFormHtml = isAdmin() ? `
+                    <form class="edit-form" id="edit-form">
+                        <div class="form-group">
+                            <label for="edit-subject">Subject</label>
+                            <input type="text" id="edit-subject" name="subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-message">Content</label>
+                            <div class="editor-container">
+                                <div id="edit-editor"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="edit-actions">
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="save-btn">Save Changes</button>
+                        </div>
+                        
+                        <div id="edit-message-display" class="edit-message"></div>
+                    </form>
+                ` : '';
+                
+                document.getElementById('article-container').innerHTML = `
+                    <header class="article-header">
+                        <h1>${currentPost.subject}</h1>
+                        <div class="article-meta">
+                            <span>${currentPost.author}</span>
+                            <span>•</span>
+                            <span>${new Date(currentPost.created_at).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            })}</span>
+                            <span>•</span>
+                            <span>${currentPost.view_count || 0} view${(currentPost.view_count || 0) === 1 ? '' : 's'}</span>
+                        </div>
+                        <div class="share-dropdown">
+                            <button class="share-button" onclick="sharePost()" title="Share post">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                                    <polyline points="16,6 12,2 8,6"/>
+                                    <line x1="12" y1="2" x2="12" y2="15"/>
+                                </svg>
+                                Share
+                            </button>
+                            <div class="share-dropdown-content" id="share-dropdown">
+                                <button class="share-option facebook" onclick="shareToFacebook()" title="Share on Facebook">
+                                    <svg viewBox="0 0 24 24" fill="#1877f2" width="20" height="20">
+                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                    </svg>
+                                </button>
+                                <button class="share-option copy" onclick="copyUrl()" title="Copy Link">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        ${adminActionsHtml}
+                        ${editFormHtml}
+                    </header>
+                    
+                    <div class="article-content">
+                        <div>${currentPost.message}</div>
+                    </div>
+                `;
+                
+                // Add event listener for the edit form if user is admin
+                if (isAdmin()) {
+                    addEditFormListener();
+                }
+                
+            } catch (error) {
+                console.error('Error loading post:', error);
+                document.getElementById('article-container').innerHTML = 
+                    '<div class="error">Post not found or failed to load.</div>';
+            }
+        }
+
+        // Toggle edit mode
+        function toggleEditMode() {
+            if (!currentPost) return;
+            
+            const container = document.getElementById('article-container');
+            container.classList.add('edit-mode');
+            
+            document.getElementById('edit-subject').value = currentPost.subject;
+            
+            // Always destroy existing editor first
+            if (editQuill) {
+                editQuill = null;
+            }
+            
+            // Clear the editor container
+            const editorContainer = document.getElementById('edit-editor');
+            if (editorContainer) {
+                editorContainer.innerHTML = '';
+            }
+            
+            // Use a longer delay to ensure everything is ready
+            setTimeout(() => {
+                // Create fresh editor every time
+                editQuill = new Quill('#edit-editor', {
+                    theme: 'snow',
+                    placeholder: 'Write your post content here...',
+                    modules: {
+                        toolbar: {
+                            container: [
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                ['blockquote', 'code-block'],
+                                ['link'],
+                                ['youtube'],
+                                ['clean']
+                            ],
+                            handlers: {
+                                'youtube': insertYouTubeVideoEdit
+                            }
+                        }
+                    }
+                });
+                
+                // Add custom button to edit toolbar
+                setTimeout(() => {
+                    const editYoutubeButton = document.querySelector('.ql-youtube');
+                    if (editYoutubeButton) {
+                        editYoutubeButton.innerHTML = '📺';
+                        editYoutubeButton.title = 'Insert YouTube Video';
+                    }
+                    
+                    // Set content after toolbar is ready
+                    editQuill.root.innerHTML = currentPost.message;
+                }, 100);
+                
+            }, 100);
+        }
+
+        // Cancel edit mode
+        function cancelEdit() {
+            const container = document.getElementById('article-container');
+            container.classList.remove('edit-mode');
+            document.getElementById('edit-message-display').innerHTML = '';
+        }
+
+        // Add event listener for dynamically created edit form
+        function addEditFormListener() {
+            const editForm = document.getElementById('edit-form');
+            if (editForm) {
+                editForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const token = localStorage.getItem('authToken');
+                    if (!token) {
+                        window.location.href = '/admin';
+                        return;
+                    }
+                    
+                    const saveBtn = document.getElementById('save-btn');
+                    const messageDisplay = document.getElementById('edit-message-display');
+                    
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = 'Saving...';
+                    messageDisplay.innerHTML = '';
+                    
+                    // Get content from edit form
+                    const subject = document.getElementById('edit-subject').value;
+                    const message = editQuill.root.innerHTML;
+                    
+                    if (!subject.trim()) {
+                        messageDisplay.innerHTML = '<div class="error-message">Subject is required</div>';
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = 'Save Changes';
+                        return;
+                    }
+                    
+                    if (!editQuill.getText().trim()) {
+                        messageDisplay.innerHTML = '<div class="error-message">Message content is required</div>';
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = 'Save Changes';
+                        return;
+                    }
+                    
+                    const postData = { subject, message };
+                    
+                    try {
+                        const response = await fetch(`/api/posts/${currentPost.slug || currentPost.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(postData)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok) {
+                            messageDisplay.innerHTML = '<div class="success-message">Post updated successfully!</div>';
+                            
+                            // Update the displayed post
+                            currentPost.subject = subject;
+                            currentPost.message = message;
+                            
+                            // Exit edit mode and reload the post display
+                            setTimeout(() => {
+                                cancelEdit();
+                                loadPost();
+                            }, 1000);
+                        } else {
+                            if (response.status === 401 || response.status === 403) {
+                                localStorage.removeItem('authToken');
+                                window.location.href = '/admin';
+                                return;
+                            }
+                            messageDisplay.innerHTML = `<div class="error-message">${result.error}</div>`;
+                        }
+                    } catch (error) {
+                        messageDisplay.innerHTML = '<div class="error-message">Failed to update post. Please try again.</div>';
+                    } finally {
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = 'Save Changes';
+                    }
+                });
+            }
+        }
+
+        // Toggle pin status
+        async function togglePin() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const pinBtn = document.querySelector('.pin-btn');
+            const originalText = pinBtn.textContent;
+            pinBtn.disabled = true;
+            pinBtn.textContent = currentPost.pinned ? 'Unpinning...' : 'Pinning...';
+            
+            try {
+                const response = await fetch(`/api/posts/${currentPost.slug || currentPost.id}/pin`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    currentPost.pinned = result.post.pinned;
+                    
+                    // Update button text
+                    pinBtn.textContent = currentPost.pinned ? 'Unpin' : 'Pin';
+                    
+                    // Update page title after pin status change
+                    updatePageTitle();
+                } else {
+                    console.error('Failed to toggle pin status');
+                    pinBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Failed to toggle pin status:', error);
+                pinBtn.textContent = originalText;
+            } finally {
+                pinBtn.disabled = false;
+            }
+        }
+
+        // Update page title after pin status change
+        function updatePageTitle() {
+            const titleElement = document.querySelector('.article-header h1');
+            titleElement.innerHTML = currentPost.subject;
+        }
+
+        // Confirm delete
+        function confirmDelete() {
+            if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                deletePost();
+            }
+        }
+
+        // Delete post
+        async function deletePost() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/posts/${currentPost.slug || currentPost.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    alert('Post deleted successfully!');
+                    window.location.href = '/';
+                } else {
+                    if (response.status === 401 || response.status === 403) {
+                        localStorage.removeItem('authToken');
+                        window.location.href = '/admin';
+                        return;
+                    }
+                    const result = await response.json();
+                    alert(`Failed to delete post: ${result.error}`);
+                }
+            } catch (error) {
+                alert('Failed to delete post. Please try again.');
+            }
+        }
+
+        // Newsletter functionality
+        function openNewsletterModal() {
+            document.getElementById('newsletter-modal').style.display = 'block';
+        }
+
+        function closeNewsletterModal() {
+            document.getElementById('newsletter-modal').style.display = 'none';
+            document.getElementById('newsletter-message').innerHTML = '';
+            document.getElementById('newsletter-form').reset();
+        }
+
+        // Newsletter banner click handler
+        document.getElementById('newsletter-banner').addEventListener('click', openNewsletterModal);
+
+        // Newsletter form submission
+        document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('newsletter-submit');
+            const messageDiv = document.getElementById('newsletter-message');
+            const email = document.getElementById('newsletter-email').value;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Subscribing...';
+            messageDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/newsletter/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Close modal immediately and trigger confetti celebration!
+                    closeNewsletterModal();
+                    celebrateWithConfetti();
+                    
+                    // Hide banner with a delay after confetti
+                    setTimeout(() => {
+                        const banner = document.getElementById('newsletter-banner');
+                        banner.style.transform = 'translateY(100px) scale(0.8)';
+                        banner.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            banner.classList.add('hidden');
+                        }, 300);
+                    }, 1500);
+                } else {
+                    messageDiv.innerHTML = `<div class="newsletter-error">${result.error}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="newsletter-error">Failed to subscribe. Please try again.</div>';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Subscribe';
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const shareDropdown = document.querySelector('.share-dropdown');
+            if (shareDropdown && !shareDropdown.contains(event.target)) {
+                closeShareDropdown();
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const newsletterModal = document.getElementById('newsletter-modal');
+            
+            if (event.target === newsletterModal) {
+                closeNewsletterModal();
+            }
+        }
+        
+        // Load site settings
+        async function loadSiteSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                
+                if (response.ok) {
+                    const settings = await response.json();
+                    
+                    // Update page title
+                    if (settings.site_title && currentPost) {
+                        document.title = `${currentPost.subject} - ${settings.site_title}`;
+                    }
+                    
+                    // Update footer text
+                    if (settings.footer_text) {
+                        const footerElement = document.querySelector('.footer p');
+                        if (footerElement) {
+                            footerElement.textContent = settings.footer_text;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading site settings:', error);
+            }
+        }
+
+        // Sharing functionality
+        function sharePost() {
+            if (!currentPost) return;
+
+            const url = window.location.href;
+            const title = currentPost.subject;
+            const text = `Check out this post: ${title}`;
+
+            // Check if we're on mobile (Web Share API support)
+            if (navigator.share && isMobileDevice()) {
+                navigator.share({
+                    title: title,
+                    text: text,
+                    url: url
+                }).catch(error => {
+                    console.log('Error sharing:', error);
+                    // Don't show dropdown on mobile - just log the error
+                });
+            } else {
+                // Desktop - show dropdown
+                toggleShareDropdown();
+            }
+        }
+
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                   (window.innerWidth <= 768);
+        }
+
+        function toggleShareDropdown() {
+            const dropdown = document.getElementById('share-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function closeShareDropdown() {
+            const dropdown = document.getElementById('share-dropdown');
+            dropdown.classList.remove('show');
+        }
+
+        // Share to Facebook
+        function shareToFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            window.open(facebookUrl, '_blank', 'width=600,height=400');
+            closeShareDropdown();
+        }
+
+        // Copy URL to clipboard
+        async function copyUrl() {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                
+                // Show feedback - find the copy button in the dropdown
+                const copyBtn = document.querySelector('.share-option.copy');
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 6L9 17l-5-5"/></svg>';
+                copyBtn.style.backgroundColor = '#10b981';
+                copyBtn.style.color = '#fff';
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                    copyBtn.style.backgroundColor = '';
+                    copyBtn.style.color = '';
+                    closeShareDropdown();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Failed to copy URL:', error);
+                // Fallback: select text for manual copy
+                prompt('Copy this URL:', window.location.href);
+            }
+        }
+
+        // Check newsletter subscription status by IP
+        async function checkNewsletterSubscription() {
+            try {
+                const response = await fetch('/api/newsletter/check-ip');
+                const result = await response.json();
+                
+                if (!result.subscribed) {
+                    // Show the newsletter banner if IP hasn't subscribed yet
+                    const banner = document.getElementById('newsletter-banner');
+                    banner.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error checking newsletter subscription:', error);
+                // Show banner on error (default behavior)
+                const banner = document.getElementById('newsletter-banner');
+                banner.classList.remove('hidden');
+            }
+        }
+
+        // Load post when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initDarkMode();
+            loadPost();
+            checkNewsletterSubscription();
+        });
+    </script>
+</body>
+</html> 

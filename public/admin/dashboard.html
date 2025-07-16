@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <meta name="description" content="Admin dashboard for managing blog posts">
+    
+    <script>
+        // Apply dark mode immediately to prevent flash
+        (function() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'enabled') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
+    
+    <!-- Quill.js CDN -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #000;
+            background-color: #fff;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark mode styles */
+        html.dark-mode body {
+            color: #fff;
+            background-color: #000;
+        }
+
+        html.dark-mode .post-form,
+        html.dark-mode .subscribers-section,
+        html.dark-mode .database-section {
+            background-color: #111;
+            border-color: #333;
+        }
+
+        html.dark-mode .form-group input,
+        html.dark-mode .form-group select,
+        html.dark-mode .form-group textarea {
+            background-color: #000;
+            color: #fff;
+            border-color: #333;
+        }
+
+        html.dark-mode .subscribers-table-wrapper {
+            border-color: #333;
+            scrollbar-color: #666 transparent;
+        }
+        
+        html.dark-mode .subscribers-table-wrapper::-webkit-scrollbar-thumb {
+            background-color: #666;
+        }
+        
+        html.dark-mode .subscribers-table-wrapper::-webkit-scrollbar-thumb:hover {
+            background-color: #888;
+        }
+
+        html.dark-mode .subscribers-table {
+            color: #fff;
+        }
+
+        html.dark-mode .subscribers-table th {
+            color: #fff;
+        }
+
+        html.dark-mode .subscribers-table tbody tr:hover {
+            background-color: #222;
+        }
+
+        html.dark-mode .database-status.success {
+            background-color: #0f3f2e;
+            border-color: #10b981;
+            color: #34d399;
+        }
+
+        html.dark-mode .database-status.error {
+            background-color: #3f1e1e;
+            border-color: #ef4444;
+            color: #f87171;
+        }
+
+        html.dark-mode .database-status.info {
+            background-color: #1e2a4f;
+            border-color: #3b82f6;
+            color: #60a5fa;
+        }
+
+        html.dark-mode .file-input-label {
+            background-color: #222;
+            color: #fff;
+            border-color: #333;
+        }
+
+        html.dark-mode .file-input-label:hover {
+            background-color: #333;
+        }
+
+        html.dark-mode .import-warning {
+            background-color: #2a1f0f;
+            border-color: #f59e0b;
+        }
+
+        html.dark-mode .import-warning h4,
+        html.dark-mode .import-warning p {
+            color: #fbbf24;
+        }
+
+        /* Dark mode database buttons */
+        html.dark-mode .database-btn-export,
+        html.dark-mode .database-btn-import {
+            background-color: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        html.dark-mode .database-btn-export:hover:not(:disabled),
+        html.dark-mode .database-btn-import:hover:not(:disabled) {
+            background-color: #e5e7eb;
+        }
+
+        html.dark-mode .logo h1 {
+            color: #fff;
+        }
+
+        html.dark-mode .logo p {
+            color: #ccc;
+        }
+
+        html.dark-mode .tab-button {
+            background-color: #222;
+            color: #fff;
+            border-color: #333;
+        }
+
+        html.dark-mode .tab-button.active {
+            background-color: #000;
+            color: #fff;
+            border-color: #555;
+        }
+
+        html.dark-mode .tab-button:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        html.dark-mode .form-group label {
+            color: #fff;
+        }
+
+        /* Dark mode Quill editor styling */
+        html.dark-mode .editor-container {
+            border: 1px solid #333 !important;
+            background: #111;
+        }
+
+        html.dark-mode .ql-toolbar {
+            background-color: #222;
+            border-bottom-color: #333 !important;
+            border: none !important;
+            border-bottom: 1px solid #333 !important;
+            color: #fff;
+        }
+
+        html.dark-mode .ql-container {
+            background-color: #111;
+            color: #fff;
+            border: none !important;
+        }
+
+        html.dark-mode .ql-editor {
+            background-color: #111;
+            color: #fff;
+        }
+
+        html.dark-mode .ql-editor.ql-blank::before {
+            color: #666;
+        }
+
+        /* Dark mode Quill toolbar buttons */
+        html.dark-mode .ql-toolbar .ql-stroke {
+            stroke: #fff;
+        }
+
+        html.dark-mode .ql-toolbar .ql-fill {
+            fill: #fff;
+        }
+
+        html.dark-mode .ql-toolbar button:hover .ql-stroke {
+            stroke: #ccc;
+        }
+
+        html.dark-mode .ql-toolbar button:hover .ql-fill {
+            fill: #ccc;
+        }
+
+        html.dark-mode .ql-toolbar button.ql-active .ql-stroke {
+            stroke: #60a5fa;
+        }
+
+        html.dark-mode .ql-toolbar button.ql-active .ql-fill {
+            fill: #60a5fa;
+        }
+
+        html.dark-mode .submit-button {
+            background-color: #fff;
+            color: #000;
+        }
+
+        html.dark-mode .submit-button:hover {
+            background-color: #ccc;
+        }
+
+        html.dark-mode .back-button a {
+            color: #ccc;
+        }
+
+        html.dark-mode .back-button a:hover {
+            color: #fff;
+        }
+
+        html.dark-mode .logout-button {
+            color: #ccc;
+        }
+
+        html.dark-mode .logout-button:hover {
+            color: #fff;
+        }
+
+        /* Fix all text elements to be white in dark mode */
+        html.dark-mode h1,
+        html.dark-mode h2,
+        html.dark-mode h3,
+        html.dark-mode h4,
+        html.dark-mode h5,
+        html.dark-mode h6,
+        html.dark-mode p,
+        html.dark-mode span,
+        html.dark-mode div,
+        html.dark-mode td,
+        html.dark-mode th {
+            color: #fff !important;
+        }
+
+        html.dark-mode .form-help {
+            color: #999 !important;
+        }
+
+        html.dark-mode .tab-content {
+            color: #fff;
+        }
+
+        html.dark-mode .empty-state h3 {
+            color: #fff !important;
+        }
+
+        html.dark-mode .empty-state p {
+            color: #999 !important;
+        }
+
+        html.dark-mode .header-actions {
+            color: #fff;
+        }
+
+        html.dark-mode .email-cell,
+        html.dark-mode .ip-cell,
+        html.dark-mode .date-cell {
+            color: #fff !important;
+        }
+        
+        .container {
+            max-width: 42rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            padding-top: 4rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .back-button a, .logout-button {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 300;
+            transition: color 0.2s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .back-button a:hover, .logout-button:hover {
+            color: #1f2937;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            background: none;
+            border: 1px solid #e5e7eb;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+
+        .dark-mode-toggle svg {
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .dark-mode-toggle:hover {
+            border-color: #9ca3af;
+            transform: scale(1.05);
+        }
+
+        html.dark-mode .dark-mode-toggle {
+            border-color: #333;
+            color: #fff;
+        }
+
+        html.dark-mode .dark-mode-toggle:hover {
+            border-color: #666;
+        }
+        
+        .logo {
+            margin-bottom: 3rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #000;
+            letter-spacing: -0.025em;
+        }
+        
+        .header {
+            margin-bottom: 4rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            color: #4b5563;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+        
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #f3f4f6;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 300;
+            color: #6b7280;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        
+        .tab-button:hover {
+            color: #374151;
+        }
+        
+        .tab-button.active {
+            color: #000;
+            border-bottom-color: #000;
+        }
+        
+        .tab-content {
+            display: none;
+            margin-bottom: 4rem;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .post-form {
+            background: #fff;
+            border: 1px solid #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 2rem;
+        }
+        
+        .post-form h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 2rem;
+            letter-spacing: -0.025em;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+            resize: vertical;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #374151;
+        }
+        
+        .form-help {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+            font-weight: 300;
+        }
+        
+        /* Quill editor styling */
+        .editor-container {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background: #fff;
+        }
+        
+        .ql-toolbar {
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid #e5e7eb;
+            border-radius: 0.375rem 0.375rem 0 0;
+        }
+        
+        .ql-container {
+            border: none;
+            font-size: 1rem;
+            font-family: inherit;
+            min-height: 200px;
+        }
+        
+        .ql-editor {
+            padding: 0.75rem;
+            min-height: 200px;
+            line-height: 1.6;
+        }
+        
+        .ql-editor:focus {
+            outline: none;
+        }
+        
+        /* Responsive iframe styling */
+        .ql-editor iframe {
+            width: 100% !important;
+            height: 400px !important;
+            max-width: 100% !important;
+            margin: 1rem 0 !important;
+            border-radius: 0.5rem !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+                padding-top: 2rem;
+            }
+            
+            .header-actions {
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 1.5rem;
+            }
+            
+            .header-actions > div:last-child {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .dark-mode-toggle {
+                margin-left: 0.5rem;
+                margin-right: 0;
+                width: 2rem;
+                height: 2rem;
+            }
+            
+            .dark-mode-toggle svg {
+                width: 1rem;
+                height: 1rem;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                border-bottom: none;
+                margin-bottom: 1.5rem;
+            }
+            
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.8rem;
+                border: 1px solid #e5e7eb;
+                border-radius: 0.375rem;
+                border-bottom: 1px solid #e5e7eb;
+                background-color: #fff;
+                flex: 1;
+                min-width: calc(50% - 0.25rem);
+            }
+            
+            .tab-button.active {
+                background-color: #000;
+                color: #fff;
+                border-color: #000;
+                border-bottom-color: #000;
+            }
+            
+            .tab-button:hover {
+                border-color: #9ca3af;
+            }
+            
+            .tab-button.active:hover {
+                border-color: #000;
+                color: #fff;
+            }
+            
+            .ql-editor iframe {
+                height: 250px !important;
+            }
+            
+            /* Dark mode mobile tab styling */
+            html.dark-mode .tab-button {
+                background-color: #111;
+                color: #ccc;
+                border-color: #333;
+            }
+            
+            html.dark-mode .tab-button.active {
+                background-color: #fff;
+                color: #000;
+                border-color: #fff;
+            }
+            
+            html.dark-mode .tab-button:hover {
+                border-color: #666;
+                color: #fff;
+                background-color: #333;
+            }
+            
+            html.dark-mode .tab-button.active:hover {
+                border-color: #fff;
+                color: #000;
+                background-color: #fff;
+            }
+        }
+        
+        .submit-button {
+            padding: 0.75rem 2rem;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .submit-button:hover {
+            background-color: #374151;
+        }
+        
+        .submit-button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+        
+        .success-message {
+            color: #10b981;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+        
+        /* Subscribers Table */
+        .subscribers-section {
+            background: #fff;
+            border: 1px solid #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 2rem;
+        }
+        
+        .subscribers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .subscribers-section h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 0;
+            letter-spacing: -0.025em;
+        }
+        
+        .export-btn {
+            padding: 0.5rem 1rem;
+            background-color: #10b981;
+            color: #fff;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .export-btn:hover {
+            background-color: #059669;
+        }
+        
+        .export-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .subscribers-stats {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+        
+        .subscribers-table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #f3f4f6;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+            /* Custom scrollbar for better appearance */
+            scrollbar-width: thin;
+            scrollbar-color: #d1d5db transparent;
+        }
+        
+        .subscribers-table-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .subscribers-table-wrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .subscribers-table-wrapper::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 4px;
+        }
+        
+        .subscribers-table-wrapper::-webkit-scrollbar-thumb:hover {
+            background-color: #9ca3af;
+        }
+        
+        .subscribers-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px; /* Minimum width to prevent table from being too cramped */
+        }
+        
+        .subscribers-table th,
+        .subscribers-table td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+        
+        .subscribers-table th {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .subscribers-table td {
+            font-weight: 300;
+            color: #000;
+        }
+        
+        .subscribers-table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+        
+        .email-cell {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            min-width: 200px; /* Ensure enough space for email addresses */
+        }
+        
+        .ip-cell {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            color: #6b7280;
+            min-width: 120px; /* Ensure enough space for IP addresses */
+        }
+        
+        .date-cell {
+            color: #6b7280;
+            font-size: 0.875rem;
+            min-width: 130px; /* Ensure enough space for date/time */
+        }
+        
+        .loading-table {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        
+        /* Database Management */
+        .database-section {
+            background: #fff;
+            border: 1px solid #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .database-section h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+        
+        .database-section p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .database-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .database-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .database-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .database-btn-export {
+            background-color: #000;
+            color: #fff;
+            border: 1px solid #000;
+        }
+        
+        .database-btn-export:hover:not(:disabled) {
+            background-color: #374151;
+        }
+        
+        .database-btn-import {
+            background-color: #000;
+            color: #fff;
+            border: 1px solid #000;
+        }
+        
+        .database-btn-import:hover:not(:disabled) {
+            background-color: #374151;
+        }
+        
+        .import-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        .import-section h3 {
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: #000;
+            margin-bottom: 1rem;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .file-input-label:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .file-selected {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .import-warning {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .import-warning h4 {
+            color: #92400e;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .import-warning p {
+            color: #92400e;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        .database-status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 300;
+        }
+        
+        .database-status.success {
+            background-color: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        
+        .database-status.error {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+        
+        .database-status.info {
+            background-color: #dbeafe;
+            border: 1px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        /* Checkbox styling */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            cursor: pointer;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .custom-checkbox .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 1rem;
+            width: 1rem;
+            background-color: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked + .checkmark {
+            background-color: #000;
+            border-color: #000;
+        }
+
+        .custom-checkbox .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 4px;
+            top: 1px;
+            width: 3px;
+            height: 6px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked + .checkmark::after {
+            display: block;
+        }
+
+        /* Dark mode checkbox styling */
+        html.dark-mode .custom-checkbox .checkmark {
+            background-color: #111;
+            border-color: #333;
+        }
+
+        html.dark-mode .custom-checkbox input[type="checkbox"]:checked + .checkmark {
+            background-color: #fff;
+            border-color: #fff;
+        }
+
+        html.dark-mode .custom-checkbox input[type="checkbox"]:checked + .checkmark::after {
+            border-color: #000;
+        }
+
+        /* Delete button styling */
+        .delete-btn {
+            padding: 0.5rem 1rem;
+            background-color: #000;
+            color: #fff;
+            border: 1px solid #000;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-left: 1rem;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background-color: #374151;
+        }
+
+        .delete-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        html.dark-mode .delete-btn {
+            background-color: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        html.dark-mode .delete-btn:hover:not(:disabled) {
+            background-color: #e5e7eb;
+        }
+
+        /* Selection controls */
+        .selection-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        html.dark-mode .selection-controls {
+            border-bottom-color: #333;
+        }
+
+        .selection-info {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 300;
+        }
+
+        html.dark-mode .selection-info {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <div class="back-button">
+                    <a href="/">← Back to Blog</a>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <button class="dark-mode-toggle" id="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle dark mode">
+                        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button class="logout-button" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <!-- Logo -->
+            <div class="logo">
+                <h1 id="site-title-header"></h1>
+            </div>
+
+
+
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button class="tab-button active" onclick="showTab('posts')">Create Post</button>
+                <button class="tab-button" onclick="showTab('subscribers')">Newsletter Subscribers</button>
+                <button class="tab-button" onclick="showTab('profile')">Profile</button>
+                <button class="tab-button" onclick="showTab('settings')">Settings</button>
+                <button class="tab-button" onclick="showTab('database')">Database</button>
+            </div>
+
+            <!-- Posts Tab -->
+            <div id="posts-tab" class="tab-content active">
+                <form class="post-form" id="post-form">
+                    <h2>Create New Post</h2>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required placeholder="Enter post subject">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <div class="editor-container">
+                            <div id="editor"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-button" id="submit-button">
+                        Create Post
+                    </button>
+                    
+                    <div id="message-display"></div>
+                </form>
+            </div>
+
+            <!-- Subscribers Tab -->
+            <div id="subscribers-tab" class="tab-content">
+                <div class="subscribers-section">
+                    <div class="subscribers-header">
+                        <h2>Newsletter Subscribers</h2>
+                        <button class="export-btn" id="export-csv-btn" onclick="exportSubscribersCSV()">Export CSV</button>
+                    </div>
+                    
+                    <div class="subscribers-stats">
+                        <div class="stat">
+                            <div class="stat-number" id="total-subscribers">-</div>
+                            <div class="stat-label">Total Subscribers</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number" id="recent-subscribers">-</div>
+                            <div class="stat-label">This Week</div>
+                        </div>
+                    </div>
+                    
+                    <div id="subscribers-table-container">
+                        <div class="loading-table">Loading subscribers...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile-tab" class="tab-content">
+                <div class="post-form">
+                    <h2>Profile Settings</h2>
+                    
+                    <!-- Display Name Form -->
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label for="display-name">Display Name</label>
+                            <input type="text" id="display-name" name="display_name" placeholder="Enter display name" required>
+                            <div class="form-help">This name will be shown as the author of your posts</div>
+                        </div>
+                        
+                        <button type="submit" class="submit-button" id="profile-submit-button">
+                            Save Display Name
+                        </button>
+                        
+                        <div id="profile-message-display"></div>
+                    </form>
+                    
+                    <!-- Password Change Form -->
+                    <form id="password-form" style="margin-top: 3rem; padding-top: 3rem; border-top: 1px solid #f3f4f6;">
+                        <h3 style="font-size: 1.25rem; font-weight: 300; color: #000; margin-bottom: 1.5rem;">Change Password</h3>
+                        
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" name="current_password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" name="new_password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm New Password</label>
+                            <input type="password" id="confirm-password" name="confirm_password" required>
+                        </div>
+                        
+                        <button type="submit" class="submit-button" id="password-submit-button">
+                            Change Password
+                        </button>
+                        
+                        <div id="password-message-display"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="post-form">
+                    <h2>Site Settings</h2>
+                    
+                    <form id="settings-form">
+                        <div class="form-group">
+                            <label for="site-title">Site Title</label>
+                            <input type="text" id="site-title" name="site_title" placeholder="Enter site title" required>
+                            <div class="form-help">This title will be displayed throughout the site</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="site-description">Site Description</label>
+                            <textarea id="site-description" name="site_description" placeholder="Enter site description" rows="3"></textarea>
+                            <div class="form-help">This text appears under the main title on the homepage</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="footer-text">Footer Text</label>
+                            <textarea id="footer-text" name="footer_text" placeholder="Enter footer text" rows="2"></textarea>
+                            <div class="form-help">This text appears at the bottom of every page</div>
+                        </div>
+                        
+                        <button type="submit" class="submit-button" id="settings-submit-button">
+                            Save Settings
+                        </button>
+                        
+                        <div id="settings-message-display"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Database Tab -->
+            <div id="database-tab" class="tab-content">
+                <!-- Export Section -->
+                <div class="database-section">
+                    <h2>Export Database</h2>
+                    <p>Download a complete backup of your database including posts, subscribers, links, and settings.</p>
+                    
+                    <div class="database-actions">
+                        <button class="database-btn database-btn-export" id="export-database-btn" onclick="exportDatabase()">
+                            Export Database
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Import Section -->
+                <div class="database-section">
+                    <h2>Import Database</h2>
+                    <p>Restore your database from a backup file. This will replace all current data.</p>
+                    
+                    <div class="import-warning">
+                        <h4>⚠️ Warning</h4>
+                        <p>Importing will replace all existing posts, subscribers, links, and settings. This action cannot be undone. Make sure to export your current data first.</p>
+                    </div>
+                    
+                    <div class="import-section">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="backup-file" class="file-input" accept=".json" onchange="handleFileSelect(this)">
+                            <label for="backup-file" class="file-input-label">
+                                Choose Backup File
+                            </label>
+                        </div>
+                        <div id="file-selected" class="file-selected"></div>
+                        
+                        <div class="database-actions">
+                            <button class="database-btn database-btn-import" id="import-database-btn" onclick="importDatabase()" disabled>
+                                Import Database
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="database-status"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Quill.js CDN -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+    <script>
+        // YouTube helper functions
+        function extractYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function createYouTubeEmbed(videoId) {
+            return `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        }
+
+        function insertYouTubeVideo() {
+            const url = prompt('Enter YouTube URL:');
+            if (!url) return;
+            
+            const videoId = extractYouTubeId(url);
+            if (!videoId) {
+                alert('Please enter a valid YouTube URL');
+                return;
+            }
+            
+            const embedHTML = createYouTubeEmbed(videoId);
+            const range = quill.getSelection();
+            if (range) {
+                quill.clipboard.dangerouslyPasteHTML(range.index, embedHTML);
+            } else {
+                quill.clipboard.dangerouslyPasteHTML(embedHTML);
+            }
+        }
+
+        // Initialize Quill editor
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            placeholder: 'Write your post content here...',
+            modules: {
+                toolbar: {
+                    container: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block'],
+                        ['link'],
+                        ['youtube'],
+                        ['clean']
+                    ],
+                    handlers: {
+                        'youtube': insertYouTubeVideo
+                    }
+                }
+            }
+        });
+
+        // Add custom button to toolbar
+        const toolbar = quill.getModule('toolbar');
+        const youtubeButton = document.querySelector('.ql-youtube');
+        if (youtubeButton) {
+            youtubeButton.innerHTML = '📺';
+            youtubeButton.title = 'Insert YouTube Video';
+        }
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Load subscribers if switching to subscribers tab
+            if (tabName === 'subscribers') {
+                loadSubscribers();
+            }
+            
+            // Load profile if switching to profile tab
+            if (tabName === 'profile') {
+                loadProfile();
+            }
+            
+            // Load settings if switching to settings tab
+            if (tabName === 'settings') {
+                loadSettings();
+            }
+        }
+
+        // Load subscribers
+        async function loadSubscribers() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/newsletter/subscribers', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load subscribers');
+                }
+                
+                const subscribers = await response.json();
+                displaySubscribers(subscribers);
+                
+            } catch (error) {
+                console.error('Error loading subscribers:', error);
+                document.getElementById('subscribers-table-container').innerHTML = 
+                    '<div class="loading-table">Error loading subscribers.</div>';
+            }
+        }
+
+        // Display subscribers
+        function displaySubscribers(subscribers) {
+            const container = document.getElementById('subscribers-table-container');
+            const totalElement = document.getElementById('total-subscribers');
+            const recentElement = document.getElementById('recent-subscribers');
+            const exportBtn = document.getElementById('export-csv-btn');
+            
+            // Update stats
+            totalElement.textContent = subscribers.length;
+            
+            // Enable/disable export button based on subscriber count
+            exportBtn.disabled = subscribers.length === 0;
+            
+            // Calculate recent subscribers (last 7 days)
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const recentCount = subscribers.filter(sub => 
+                new Date(sub.created_at) > oneWeekAgo
+            ).length;
+            recentElement.textContent = recentCount;
+            
+            if (subscribers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No subscribers yet</h3>
+                        <p>When people subscribe to your newsletter, they'll appear here.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Generate table with checkboxes
+            const tableHTML = `
+                <div class="selection-controls">
+                    <div class="checkbox-container">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll()">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label for="select-all-checkbox">Select All</label>
+                    </div>
+                    <div class="selection-info" id="selection-info">
+                        0 selected
+                    </div>
+                    <button class="delete-btn" id="delete-selected-btn" onclick="deleteSelectedSubscribers()" disabled>
+                        Delete Selected
+                    </button>
+                </div>
+                <div class="subscribers-table-wrapper">
+                    <table class="subscribers-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Select</th>
+                                <th>Email</th>
+                                <th>IP Address</th>
+                                <th>Subscribed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${subscribers.map(subscriber => `
+                                <tr>
+                                    <td>
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox" class="subscriber-checkbox" value="${subscriber.id}" onchange="updateSelectionInfo()">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </td>
+                                    <td class="email-cell">${subscriber.email}</td>
+                                    <td class="ip-cell">${subscriber.ip_address || '-'}</td>
+                                    <td class="date-cell">${new Date(subscriber.created_at).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short', 
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = tableHTML;
+        }
+
+        // Toggle select all checkboxes
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            const subscriberCheckboxes = document.querySelectorAll('.subscriber-checkbox');
+            
+            subscriberCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateSelectionInfo();
+        }
+
+        // Update selection info and delete button state
+        function updateSelectionInfo() {
+            const subscriberCheckboxes = document.querySelectorAll('.subscriber-checkbox');
+            const selectedCheckboxes = document.querySelectorAll('.subscriber-checkbox:checked');
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            const selectionInfo = document.getElementById('selection-info');
+            const deleteBtn = document.getElementById('delete-selected-btn');
+            
+            const selectedCount = selectedCheckboxes.length;
+            const totalCount = subscriberCheckboxes.length;
+            
+            // Update selection info text
+            selectionInfo.textContent = `${selectedCount} selected`;
+            
+            // Update delete button state
+            deleteBtn.disabled = selectedCount === 0;
+            
+            // Update select all checkbox state
+            if (selectedCount === 0) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = false;
+            } else if (selectedCount === totalCount) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = true;
+            } else {
+                selectAllCheckbox.indeterminate = true;
+            }
+        }
+
+        // Delete selected subscribers
+        async function deleteSelectedSubscribers() {
+            const selectedCheckboxes = document.querySelectorAll('.subscriber-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                return;
+            }
+            
+            const selectedIds = Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.value));
+            const confirmMessage = `Are you sure you want to delete ${selectedIds.length} subscriber(s)? This action cannot be undone.`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const deleteBtn = document.getElementById('delete-selected-btn');
+            const originalText = deleteBtn.textContent;
+            
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = 'Deleting...';
+            
+            try {
+                const response = await fetch('/api/newsletter/subscribers', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ subscriberIds: selectedIds })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to delete subscribers');
+                }
+                
+                const result = await response.json();
+                
+                // Show success message
+                alert(`Successfully deleted ${result.deletedCount} subscriber(s)`);
+                
+                // Reload subscribers list
+                loadSubscribers();
+                
+            } catch (error) {
+                console.error('Error deleting subscribers:', error);
+                alert('Failed to delete subscribers. Please try again.');
+            } finally {
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = originalText;
+            }
+        }
+
+        // Export subscribers to CSV
+        async function exportSubscribersCSV() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const exportBtn = document.getElementById('export-csv-btn');
+            const originalText = exportBtn.textContent;
+            
+            exportBtn.disabled = true;
+            exportBtn.textContent = 'Exporting...';
+            
+            try {
+                const response = await fetch('/api/newsletter/subscribers/export', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to export subscribers');
+                }
+                
+                // Create download link
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'newsletter-subscribers.csv';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+            } catch (error) {
+                console.error('Error exporting subscribers:', error);
+                alert('Failed to export subscribers. Please try again.');
+            } finally {
+                exportBtn.disabled = false;
+                exportBtn.textContent = originalText;
+            }
+        }
+
+        // Load site settings
+        async function loadSiteSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                
+                if (response.ok) {
+                    const settings = await response.json();
+                    if (settings.site_title) {
+                        document.getElementById('site-title-header').textContent = settings.site_title;
+                        document.title = `Admin Dashboard - ${settings.site_title}`;
+                    } else {
+                        // Fallback if no custom title is set
+                        document.getElementById('site-title-header').textContent = 'Blog';
+                        document.title = 'Admin Dashboard';
+                    }
+                } else {
+                    // Fallback if API call fails
+                    document.getElementById('site-title-header').textContent = 'Blog';
+                    document.title = 'Admin Dashboard';
+                }
+            } catch (error) {
+                console.error('Error loading site settings:', error);
+                // Fallback if there's an error
+                document.getElementById('site-title-header').textContent = 'Blog';
+                document.title = 'Admin Dashboard';
+            }
+        }
+
+        // Dark mode functionality
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const toggle = document.getElementById('dark-mode-toggle');
+            
+            html.classList.toggle('dark-mode');
+            
+            if (html.classList.contains('dark-mode')) {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode');
+            const html = document.documentElement;
+            const toggle = document.getElementById('dark-mode-toggle');
+            
+            if (darkMode === 'enabled') {
+                html.classList.add('dark-mode');
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>';
+            } else {
+                toggle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+            }
+        }
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            initDarkMode();
+            loadSiteSettings();
+        });
+
+        // Handle post creation
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const button = document.getElementById('submit-button');
+            const messageDisplay = document.getElementById('message-display');
+            
+            button.disabled = true;
+            button.textContent = 'Creating...';
+            messageDisplay.innerHTML = '';
+            
+            // Get content from Quill editor
+            const subject = document.getElementById('subject').value;
+            const message = quill.root.innerHTML; // Get HTML content from Quill
+            
+            if (!subject.trim()) {
+                messageDisplay.innerHTML = '<div class="error-message">Subject is required</div>';
+                button.disabled = false;
+                button.textContent = 'Create Post';
+                return;
+            }
+            
+            if (!quill.getText().trim()) {
+                messageDisplay.innerHTML = '<div class="error-message">Message content is required</div>';
+                button.disabled = false;
+                button.textContent = 'Create Post';
+                return;
+            }
+            
+            const postData = { subject, message };
+            
+            try {
+                const response = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(postData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    messageDisplay.innerHTML = '<div class="success-message">Post created successfully! Redirecting...</div>';
+                    
+                    // Clear form
+                    document.getElementById('subject').value = '';
+                    quill.setContents([]);
+                    
+                    // Redirect to articles page after a brief delay
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    if (response.status === 401 || response.status === 403) {
+                        localStorage.removeItem('authToken');
+                        window.location.href = '/admin';
+                        return;
+                    }
+                    messageDisplay.innerHTML = `<div class="error-message">${result.error}</div>`;
+                }
+            } catch (error) {
+                messageDisplay.innerHTML = '<div class="error-message">Failed to create post. Please try again.</div>';
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Create Post';
+            }
+        });
+
+        // Load user profile
+        async function loadProfile() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load profile');
+                }
+                
+                const profile = await response.json();
+                
+                // Populate display name field
+                document.getElementById('display-name').value = profile.display_name || '';
+                
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('profile-message-display').innerHTML = 
+                    '<div class="error-message">Error loading profile.</div>';
+            }
+        }
+
+        // Handle profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const button = document.getElementById('profile-submit-button');
+            const messageDisplay = document.getElementById('profile-message-display');
+            const displayName = document.getElementById('display-name').value;
+            
+            button.disabled = true;
+            button.textContent = 'Saving...';
+            messageDisplay.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ display_name: displayName })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    messageDisplay.innerHTML = '<div class="success-message">Display name updated successfully!</div>';
+                } else {
+                    messageDisplay.innerHTML = `<div class="error-message">${result.error}</div>`;
+                }
+            } catch (error) {
+                messageDisplay.innerHTML = '<div class="error-message">Failed to update display name. Please try again.</div>';
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Save Display Name';
+            }
+        });
+
+        // Handle password form submission
+        document.getElementById('password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const button = document.getElementById('password-submit-button');
+            const messageDisplay = document.getElementById('password-message-display');
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            button.disabled = true;
+            button.textContent = 'Changing...';
+            messageDisplay.innerHTML = '';
+            
+            // Validate passwords match
+            if (newPassword !== confirmPassword) {
+                messageDisplay.innerHTML = '<div class="error-message">New passwords do not match.</div>';
+                button.disabled = false;
+                button.textContent = 'Change Password';
+                return;
+            }
+            
+            if (newPassword.length < 4) {
+                messageDisplay.innerHTML = '<div class="error-message">Password must be at least 4 characters long.</div>';
+                button.disabled = false;
+                button.textContent = 'Change Password';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    messageDisplay.innerHTML = '<div class="success-message">Password changed successfully!</div>';
+                    // Clear password fields
+                    document.getElementById('current-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                } else {
+                    messageDisplay.innerHTML = `<div class="error-message">${result.error}</div>`;
+                }
+            } catch (error) {
+                messageDisplay.innerHTML = '<div class="error-message">Failed to change password. Please try again.</div>';
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Change Password';
+            }
+        });
+
+        // Load settings
+        async function loadSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load settings');
+                }
+                
+                const settings = await response.json();
+                
+                // Populate form fields
+                document.getElementById('site-title').value = settings.site_title || '';
+                document.getElementById('site-description').value = settings.site_description || '';
+                document.getElementById('footer-text').value = settings.footer_text || '';
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                document.getElementById('settings-message-display').innerHTML = 
+                    '<div class="error-message">Error loading settings.</div>';
+            }
+        }
+
+        // Handle settings form submission
+        document.getElementById('settings-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const button = document.getElementById('settings-submit-button');
+            const messageDisplay = document.getElementById('settings-message-display');
+            const siteTitle = document.getElementById('site-title').value;
+            const siteDescription = document.getElementById('site-description').value;
+            const footerText = document.getElementById('footer-text').value;
+            
+            button.disabled = true;
+            button.textContent = 'Saving...';
+            messageDisplay.innerHTML = '';
+            
+            if (!siteTitle.trim()) {
+                messageDisplay.innerHTML = '<div class="error-message">Site title is required.</div>';
+                button.disabled = false;
+                button.textContent = 'Save Settings';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        site_title: siteTitle,
+                        site_description: siteDescription,
+                        footer_text: footerText
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    messageDisplay.innerHTML = '<div class="success-message">Settings updated successfully!</div>';
+                    // Update the site title in the header and page title
+                    document.querySelector('.logo h1').textContent = siteTitle;
+                    document.title = `Admin Dashboard - ${siteTitle}`;
+                } else {
+                    messageDisplay.innerHTML = `<div class="error-message">${result.error}</div>`;
+                }
+            } catch (error) {
+                messageDisplay.innerHTML = '<div class="error-message">Failed to update settings. Please try again.</div>';
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Save Settings';
+            }
+        });
+
+        // Database Export function
+        async function exportDatabase() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const exportBtn = document.getElementById('export-database-btn');
+            const originalText = exportBtn.textContent;
+            const statusDiv = document.getElementById('database-status');
+            
+            exportBtn.disabled = true;
+            exportBtn.textContent = '📥 Exporting...';
+            statusDiv.innerHTML = '<div class="database-status info">Preparing database export...</div>';
+            
+            try {
+                const response = await fetch('/api/database/export', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                
+                // Create download link
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `limebyte_backup_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                statusDiv.innerHTML = '<div class="database-status success">✅ Database exported successfully!</div>';
+                
+            } catch (error) {
+                console.error('Export error:', error);
+                statusDiv.innerHTML = '<div class="database-status error">❌ Failed to export database. Please try again.</div>';
+            } finally {
+                exportBtn.disabled = false;
+                exportBtn.textContent = originalText;
+            }
+        }
+
+        // Handle file selection
+        function handleFileSelect(input) {
+            const fileSelectedDiv = document.getElementById('file-selected');
+            const importBtn = document.getElementById('import-database-btn');
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                fileSelectedDiv.textContent = `Selected: ${file.name}`;
+                importBtn.disabled = false;
+            } else {
+                fileSelectedDiv.textContent = '';
+                importBtn.disabled = true;
+            }
+        }
+
+        // Database Import function
+        async function importDatabase() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            const fileInput = document.getElementById('backup-file');
+            const importBtn = document.getElementById('import-database-btn');
+            const originalText = importBtn.textContent;
+            const statusDiv = document.getElementById('database-status');
+            
+            if (!fileInput.files || !fileInput.files[0]) {
+                statusDiv.innerHTML = '<div class="database-status error">❌ Please select a backup file first.</div>';
+                return;
+            }
+            
+            // Confirm import
+            if (!confirm('Are you sure you want to import this database backup? This will replace all existing data and cannot be undone.')) {
+                return;
+            }
+            
+            importBtn.disabled = true;
+            importBtn.textContent = '📤 Importing...';
+            statusDiv.innerHTML = '<div class="database-status info">Importing database backup...</div>';
+            
+            try {
+                const formData = new FormData();
+                formData.append('backup', fileInput.files[0]);
+                
+                const response = await fetch('/api/database/import', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    let statsText = '';
+                    if (result.stats) {
+                        statsText = `<br><strong>Imported:</strong> ${result.stats.posts} posts, ${result.stats.subscribers} subscribers, ${result.stats.links} links, ${result.stats.settings} settings`;
+                    }
+                    statusDiv.innerHTML = `<div class="database-status success">✅ Database imported successfully!${statsText}</div>`;
+                    
+                    // Clear file selection
+                    fileInput.value = '';
+                    document.getElementById('file-selected').textContent = '';
+                    
+                } else {
+                    statusDiv.innerHTML = `<div class="database-status error">❌ Import failed: ${result.error}</div>`;
+                }
+                
+            } catch (error) {
+                console.error('Import error:', error);
+                statusDiv.innerHTML = '<div class="database-status error">❌ Failed to import database. Please try again.</div>';
+            } finally {
+                importBtn.disabled = true;
+                importBtn.textContent = originalText;
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = '/admin';
+        }
+    </script>
+</body>
+</html> 
