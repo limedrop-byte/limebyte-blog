@@ -43,7 +43,8 @@ async function deployFresh() {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         slug VARCHAR(255),
         view_count INTEGER DEFAULT 0 NOT NULL,
-        pinned BOOLEAN DEFAULT FALSE NOT NULL
+        pinned BOOLEAN DEFAULT FALSE NOT NULL,
+        embed_id VARCHAR(255)
       );
     `);
     

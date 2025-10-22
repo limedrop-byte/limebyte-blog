@@ -1059,7 +1059,7 @@
     <div id="newsletter-modal" class="newsletter-modal">
         <div class="newsletter-modal-content">
             <h2>Join Our Newsletter</h2>
-            <p>Get the latest updates on AI, development, and fun experiments delivered to your inbox.</p>
+            <p>Get the latest updates delivered to your inbox.</p>
             
             <form class="newsletter-form" id="newsletter-form">
                 <input type="email" id="newsletter-email" placeholder="Enter your email" required>
@@ -1434,12 +1434,51 @@
                             footerElement.textContent = settings.footer_text;
                         }
                     }
+                    
+                    // Inject tracking script if provided
+                    if (settings.tracking_script && settings.tracking_script.trim()) {
+                        injectTrackingScript(settings.tracking_script);
+                    }
                 }
             } catch (error) {
                 console.error('Error loading site settings:', error);
                 // Fallback if there's an error
                 document.getElementById('site-title-header').textContent = 'Blog';
                 document.title = 'Articles';
+            }
+        }
+
+        // Inject tracking script into the page
+        function injectTrackingScript(scriptContent) {
+            try {
+                // Create a script element and inject it at the end of the body
+                const scriptElement = document.createElement('div');
+                scriptElement.innerHTML = scriptContent;
+                
+                // Move all script tags to the end of the body
+                const scripts = scriptElement.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    }
+                    if (script.innerHTML) {
+                        newScript.innerHTML = script.innerHTML;
+                    }
+                    // Copy all attributes
+                    Array.from(script.attributes).forEach(attr => {
+                        newScript.setAttribute(attr.name, attr.value);
+                    });
+                    document.body.appendChild(newScript);
+                });
+                
+                // Move any non-script content (like noscript tags) to the body
+                const nonScripts = scriptElement.querySelectorAll(':not(script)');
+                nonScripts.forEach(element => {
+                    document.body.appendChild(element);
+                });
+            } catch (error) {
+                console.error('Error injecting tracking script:', error);
             }
         }
 

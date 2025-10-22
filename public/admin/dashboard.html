@@ -1207,6 +1207,12 @@
                         </div>
                     </div>
                     
+                    <div class="form-group">
+                        <label for="embed-id">Embed ID (Optional)</label>
+                        <input type="text" id="embed-id" name="embed_id" placeholder="Enter embed ID (e.g., 68f81c353e0d241d302c873e)">
+                        <div class="form-help">Add a custom embed ID for this post. This will load a script like: &lt;script src="https://api.clearproof.ai/embed.js?embedId=YOUR_ID"&gt;&lt;/script&gt;</div>
+                    </div>
+                    
                     <button type="submit" class="submit-button" id="submit-button">
                         Create Post
                     </button>
@@ -1318,6 +1324,12 @@
                                 <span class="checkbox-text">Show view count on articles</span>
                             </label>
                             <div class="form-help">Toggle whether to display view counts on the blog homepage</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tracking-script">Tracking Script</label>
+                            <textarea id="tracking-script" name="tracking_script" placeholder="Paste your tracking code here (Google Analytics, Facebook Pixel, etc.)" rows="6"></textarea>
+                            <div class="form-help">Add custom tracking scripts that will be included on all pages. Include the full &lt;script&gt; tags.</div>
                         </div>
                         
                         <button type="submit" class="submit-button" id="settings-submit-button">
@@ -1820,6 +1832,7 @@
             // Get content from Quill editor
             const subject = document.getElementById('subject').value;
             const message = quill.root.innerHTML; // Get HTML content from Quill
+            const embedId = document.getElementById('embed-id').value;
             
             if (!subject.trim()) {
                 messageDisplay.innerHTML = '<div class="error-message">Subject is required</div>';
@@ -1835,7 +1848,7 @@
                 return;
             }
             
-            const postData = { subject, message };
+            const postData = { subject, message, embed_id: embedId };
             
             try {
                 const response = await fetch('/api/posts', {
@@ -1854,6 +1867,7 @@
                     
                     // Clear form
                     document.getElementById('subject').value = '';
+                    document.getElementById('embed-id').value = '';
                     quill.setContents([]);
                     
                     // Redirect to articles page after a brief delay
@@ -2033,6 +2047,7 @@
                 document.getElementById('site-description').value = settings.site_description || '';
                 document.getElementById('footer-text').value = settings.footer_text || '';
                 document.getElementById('show-view-count').checked = settings.show_view_count !== false; // Default to true
+                document.getElementById('tracking-script').value = settings.tracking_script || '';
                 
             } catch (error) {
                 console.error('Error loading settings:', error);
@@ -2057,6 +2072,7 @@
             const siteDescription = document.getElementById('site-description').value;
             const footerText = document.getElementById('footer-text').value;
             const showViewCount = document.getElementById('show-view-count').checked;
+            const trackingScript = document.getElementById('tracking-script').value;
             
             button.disabled = true;
             button.textContent = 'Saving...';
@@ -2080,7 +2096,8 @@
                         site_title: siteTitle,
                         site_description: siteDescription,
                         footer_text: footerText,
-                        show_view_count: showViewCount
+                        show_view_count: showViewCount,
+                        tracking_script: trackingScript
                     })
                 });
                 

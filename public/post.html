@@ -1264,6 +1264,11 @@
                 // Load site settings to update page title
                 loadSiteSettings();
                 
+                // Inject post-specific embed script if available
+                if (currentPost.embed_id && currentPost.embed_id.trim()) {
+                    injectPostEmbedScript(currentPost.embed_id);
+                }
+                
                 // Update admin panel visibility
                 const adminPanel = document.getElementById('admin-panel');
                 if (isAdmin()) {
@@ -1295,6 +1300,12 @@
                             <div class="editor-container">
                                 <div id="edit-editor"></div>
                             </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-embed-id">ClearProof.ai Disclaimer Embed ID</label>
+                            <input type="text" id="edit-embed-id" name="embed_id" placeholder="Enter embed ID (e.g., 68f81c353e0d241d302c873e)">
+                            <div class="form-help">Allows you to display a disclaimer on your single blog post. This will load a script like: &lt;script src="https://api.clearproof.ai/embed.js?embedId=YOUR_ID"&gt;&lt;/script&gt;</div>
                         </div>
                         
                         <div class="edit-actions">
@@ -1374,6 +1385,7 @@
             container.classList.add('edit-mode');
             
             document.getElementById('edit-subject').value = currentPost.subject;
+            document.getElementById('edit-embed-id').value = currentPost.embed_id || '';
             
             // Always destroy existing editor first
             if (editQuill) {
@@ -1455,6 +1467,7 @@
                     // Get content from edit form
                     const subject = document.getElementById('edit-subject').value;
                     const message = editQuill.root.innerHTML;
+                    const embedId = document.getElementById('edit-embed-id').value;
                     
                     if (!subject.trim()) {
                         messageDisplay.innerHTML = '<div class="error-message">Subject is required</div>';
@@ -1470,7 +1483,7 @@
                         return;
                     }
                     
-                    const postData = { subject, message };
+                    const postData = { subject, message, embed_id: embedId };
                     
                     try {
                         const response = await fetch(`/api/posts/${currentPost.slug || currentPost.id}`, {
@@ -1709,6 +1722,18 @@
                 }
             } catch (error) {
                 console.error('Error loading site settings:', error);
+            }
+        }
+
+        // Inject post-specific embed script
+        function injectPostEmbedScript(embedId) {
+            try {
+                const script = document.createElement('script');
+                script.src = `https://api.clearproof.ai/embed.js?embedId=${embedId}`;
+                script.async = true;
+                document.body.appendChild(script);
+            } catch (error) {
+                console.error('Error injecting post embed script:', error);
             }
         }
 

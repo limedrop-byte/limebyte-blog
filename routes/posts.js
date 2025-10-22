@@ -114,7 +114,7 @@ router.get('/:slug', async (req, res) => {
 // Create new post (protected)
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    const { subject, message } = req.body;
+    const { subject, message, embed_id } = req.body;
     
     if (!subject || !message) {
       return res.status(400).json({ error: 'Subject and message are required' });
@@ -124,10 +124,10 @@ router.post('/', authenticateToken, async (req, res) => {
     const slug = await ensureUniqueRandomSlug();
 
     const result = await pool.query(`
-      INSERT INTO posts (subject, message, slug, author_id) 
-      VALUES ($1, $2, $3, $4) 
+      INSERT INTO posts (subject, message, slug, author_id, embed_id) 
+      VALUES ($1, $2, $3, $4, $5) 
       RETURNING *
-    `, [subject, message, slug, req.user.id]);
+    `, [subject, message, slug, req.user.id, embed_id || null]);
 
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -140,7 +140,7 @@ router.post('/', authenticateToken, async (req, res) => {
 router.put('/:identifier', authenticateToken, async (req, res) => {
   try {
     const { identifier } = req.params;
-    const { subject, message } = req.body;
+    const { subject, message, embed_id } = req.body;
     
     if (!subject || !message) {
       return res.status(400).json({ error: 'Subject and message are required' });
@@ -165,10 +165,10 @@ router.put('/:identifier', authenticateToken, async (req, res) => {
 
     const result = await pool.query(`
       UPDATE posts 
-      SET subject = $1, message = $2, slug = $3, updated_at = CURRENT_TIMESTAMP 
-      WHERE id = $4 
+      SET subject = $1, message = $2, slug = $3, embed_id = $4, updated_at = CURRENT_TIMESTAMP 
+      WHERE id = $5 
       RETURNING *
-    `, [subject, message, slug, post.id]);
+    `, [subject, message, slug, embed_id || null, post.id]);
 
     res.json(result.rows[0]);
   } catch (error) {
