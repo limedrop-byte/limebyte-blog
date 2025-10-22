@@ -35,9 +35,9 @@ router.get('/', async (req, res) => {
     const { search, sortBy = 'date', sortOrder = 'desc' } = req.query;
     
     let query = `
-      SELECT p.*, COALESCE(u.display_name, u.username) as author 
+      SELECT p.*, COALESCE(u.display_name, u.username, 'Unknown') as author 
       FROM posts p 
-      JOIN users u ON p.author_id = u.id 
+      LEFT JOIN users u ON p.author_id = u.id 
     `;
     let params = [];
     
@@ -74,9 +74,9 @@ router.get('/:slug', async (req, res) => {
     
     // Try to find by slug first, fallback to ID for backwards compatibility
     let query = `
-      SELECT p.*, COALESCE(u.display_name, u.username) as author 
+      SELECT p.*, COALESCE(u.display_name, u.username, 'Unknown') as author 
       FROM posts p 
-      JOIN users u ON p.author_id = u.id 
+      LEFT JOIN users u ON p.author_id = u.id 
       WHERE p.slug = $1
     `;
     let result = await pool.query(query, [slug]);
@@ -84,9 +84,9 @@ router.get('/:slug', async (req, res) => {
     // If not found by slug and slug is numeric, try by ID (backwards compatibility)
     if (result.rows.length === 0 && /^\d+$/.test(slug)) {
       query = `
-        SELECT p.*, COALESCE(u.display_name, u.username) as author 
+        SELECT p.*, COALESCE(u.display_name, u.username, 'Unknown') as author 
         FROM posts p 
-        JOIN users u ON p.author_id = u.id 
+        LEFT JOIN users u ON p.author_id = u.id 
         WHERE p.id = $1
       `;
       result = await pool.query(query, [parseInt(slug)]);
