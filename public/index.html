@@ -1398,7 +1398,7 @@
         }
         
         // Global variable to store site settings
-        let siteSettings = { show_view_count: true };
+        let siteSettings = { show_view_count: true, show_newsletter: true };
 
         // Load site settings
         async function loadSiteSettings() {
@@ -1438,6 +1438,18 @@
                     // Inject tracking script if provided
                     if (settings.tracking_script && settings.tracking_script.trim()) {
                         injectTrackingScript(settings.tracking_script);
+                    }
+                    
+                    // Show/hide newsletter button based on setting
+                    const newsletterButton = document.querySelector('.newsletter-btn');
+                    if (newsletterButton) {
+                        newsletterButton.style.display = settings.show_newsletter ? 'block' : 'none';
+                    }
+                    
+                    // Also hide the newsletter banner if newsletter is disabled
+                    const newsletterBanner = document.getElementById('newsletter-banner');
+                    if (newsletterBanner && !settings.show_newsletter) {
+                        newsletterBanner.style.display = 'none';
                     }
                 }
             } catch (error) {

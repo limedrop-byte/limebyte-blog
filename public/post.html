@@ -1696,7 +1696,7 @@
         }
         
         // Global variable to store site settings
-        let siteSettings = { show_view_count: true };
+        let siteSettings = { show_view_count: true, show_newsletter: true };
 
         // Load site settings
         async function loadSiteSettings() {
@@ -1718,6 +1718,12 @@
                         if (footerElement) {
                             footerElement.textContent = settings.footer_text;
                         }
+                    }
+                    
+                    // Show/hide newsletter banner based on setting
+                    const newsletterBanner = document.getElementById('newsletter-banner');
+                    if (newsletterBanner && !settings.show_newsletter) {
+                        newsletterBanner.style.display = 'none';
                     }
                 }
             } catch (error) {

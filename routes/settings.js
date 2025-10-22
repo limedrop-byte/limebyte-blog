@@ -29,6 +29,16 @@ router.get('/', async (req, res) => {
     const trackingScript = trackingScriptResult.rows.length > 0 ? 
       trackingScriptResult.rows[0].setting_value : ''; // Default to empty
     
+    // Get newsletter visibility setting
+    const newsletterResult = await pool.query(`
+      SELECT setting_value FROM site_settings 
+      WHERE setting_key = 'show_newsletter' 
+      LIMIT 1
+    `);
+    
+    const showNewsletter = newsletterResult.rows.length > 0 ? 
+      newsletterResult.rows[0].setting_value === 'true' : true; // Default to true
+    
     if (result.rows.length === 0) {
       // If no settings exist, return defaults
       return res.json({ 
@@ -36,14 +46,16 @@ router.get('/', async (req, res) => {
         footer_text: 'Building the future, one commit at a time.',
         site_description: 'Welcome to my blog!',
         show_view_count: showViewCount,
-        tracking_script: trackingScript
+        tracking_script: trackingScript,
+        show_newsletter: showNewsletter
       });
     }
     
     res.json({
       ...result.rows[0],
       show_view_count: showViewCount,
-      tracking_script: trackingScript
+      tracking_script: trackingScript,
+      show_newsletter: showNewsletter
     });
   } catch (error) {
     console.error('Error fetching settings:', error);
@@ -54,7 +66,7 @@ router.get('/', async (req, res) => {
 // Update site settings (admin only)
 router.put('/', authenticateToken, async (req, res) => {
   try {
-    const { site_title, footer_text, site_description, show_view_count, tracking_script } = req.body;
+    const { site_title, footer_text, site_description, show_view_count, tracking_script, show_newsletter } = req.body;
 
     if (!site_title || !site_title.trim()) {
       return res.status(400).json({ error: 'Site title is required' });
@@ -65,6 +77,7 @@ router.put('/', authenticateToken, async (req, res) => {
     const siteDescription = site_description || 'Welcome to my blog!';
     const showViewCount = show_view_count !== undefined ? show_view_count : true;
     const trackingScript = tracking_script || '';
+    const showNewsletter = show_newsletter !== undefined ? show_newsletter : true;
 
     // Check if settings row exists
     const existingResult = await pool.query('SELECT id FROM settings LIMIT 1');
@@ -93,12 +106,21 @@ router.put('/', authenticateToken, async (req, res) => {
         DO UPDATE SET setting_value = $1, updated_at = CURRENT_TIMESTAMP
       `, [trackingScript]);
       
+      // Update or insert newsletter visibility setting
+      await pool.query(`
+        INSERT INTO site_settings (setting_key, setting_value) 
+        VALUES ('show_newsletter', $1)
+        ON CONFLICT (setting_key) 
+        DO UPDATE SET setting_value = $1, updated_at = CURRENT_TIMESTAMP
+      `, [showNewsletter.toString()]);
+      
       res.json({
         message: 'Settings updated successfully',
         settings: {
           ...result.rows[0],
           show_view_count: showViewCount,
-          tracking_script: trackingScript
+          tracking_script: trackingScript,
+          show_newsletter: showNewsletter
         }
       });
     } else {
@@ -125,12 +147,21 @@ router.put('/', authenticateToken, async (req, res) => {
         DO UPDATE SET setting_value = $1, updated_at = CURRENT_TIMESTAMP
       `, [trackingScript]);
       
+      // Update or insert newsletter visibility setting
+      await pool.query(`
+        INSERT INTO site_settings (setting_key, setting_value) 
+        VALUES ('show_newsletter', $1)
+        ON CONFLICT (setting_key) 
+        DO UPDATE SET setting_value = $1, updated_at = CURRENT_TIMESTAMP
+      `, [showNewsletter.toString()]);
+      
       res.json({
         message: 'Settings updated successfully',
         settings: {
           ...result.rows[0],
           show_view_count: showViewCount,
-          tracking_script: trackingScript
+          tracking_script: trackingScript,
+          show_newsletter: showNewsletter
         }
       });
     }
