@@ -1355,6 +1355,25 @@
                         </div>
                     ` : '';
                     
+                    // Build article meta with conditional view count
+                    let articleMeta = `
+                        <span>${post.author}</span>
+                        <span>•</span>
+                        <span>${new Date(post.created_at).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</span>
+                    `;
+                    
+                    // Add view count only if enabled in settings
+                    if (siteSettings.show_view_count) {
+                        articleMeta += `
+                            <span>•</span>
+                            <span>${post.view_count || 0} view${(post.view_count || 0) === 1 ? '' : 's'}</span>
+                        `;
+                    }
+                    
                     return `
                         <article class="article${post.pinned ? ' pinned' : ''}">
                             <a href="/post/${post.slug || post.id}">
@@ -1363,15 +1382,7 @@
                                     <h2>${highlightedTitle}</h2>
                                     <p>${preview}</p>
                                     <div class="article-meta">
-                                        <span>${post.author}</span>
-                                        <span>•</span>
-                                        <span>${new Date(post.created_at).toLocaleDateString('en-US', { 
-                                            year: 'numeric', 
-                                            month: 'long', 
-                                            day: 'numeric' 
-                                        })}</span>
-                                        <span>•</span>
-                                        <span>${post.view_count || 0} view${(post.view_count || 0) === 1 ? '' : 's'}</span>
+                                        ${articleMeta}
                                     </div>
                                 </div>
                             </a>
@@ -1386,6 +1397,9 @@
             }
         }
         
+        // Global variable to store site settings
+        let siteSettings = { show_view_count: true };
+
         // Load site settings
         async function loadSiteSettings() {
             try {
@@ -1393,6 +1407,7 @@
                 
                 if (response.ok) {
                     const settings = await response.json();
+                    siteSettings = settings; // Store settings globally
                     
                     // Update site title
                     if (settings.site_title) {
@@ -1448,12 +1463,14 @@
         }
 
         // Load articles and update UI when page loads
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             initDarkMode();
             updateAdminUI();
+            
+            // Load settings first, then articles (so view count setting is available)
+            await loadSiteSettings();
             loadArticles();
             loadLinks();
-            loadSiteSettings();
             checkNewsletterSubscription();
             
             // Initialize search and sort functionality

@@ -1317,8 +1317,10 @@
                                 month: 'long', 
                                 day: 'numeric' 
                             })}</span>
-                            <span>•</span>
-                            <span>${currentPost.view_count || 0} view${(currentPost.view_count || 0) === 1 ? '' : 's'}</span>
+                            ${siteSettings.show_view_count ? `
+                                <span>•</span>
+                                <span>${currentPost.view_count || 0} view${(currentPost.view_count || 0) === 1 ? '' : 's'}</span>
+                            ` : ''}
                         </div>
                         <div class="share-dropdown">
                             <button class="share-button" onclick="sharePost()" title="Share post">
@@ -1680,6 +1682,9 @@
             }
         }
         
+        // Global variable to store site settings
+        let siteSettings = { show_view_count: true };
+
         // Load site settings
         async function loadSiteSettings() {
             try {
@@ -1687,6 +1692,7 @@
                 
                 if (response.ok) {
                     const settings = await response.json();
+                    siteSettings = settings; // Store settings globally
                     
                     // Update page title
                     if (settings.site_title && currentPost) {
@@ -1799,8 +1805,11 @@
         }
 
         // Load post when page loads
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             initDarkMode();
+            
+            // Load settings first, then post (so view count setting is available)
+            await loadSiteSettings();
             loadPost();
             checkNewsletterSubscription();
         });
